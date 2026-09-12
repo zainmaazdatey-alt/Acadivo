@@ -149,3 +149,27 @@ PASS_PERCENTAGE  = 40   # minimum 40% to pass
 # Roll number validation pattern: 4-digit year + 3-digit serial
 # e.g. 2026001, 2026042
 ROLL_NUMBER_PATTERN = r'^\d{4}\d{3}$'
+
+import os
+import dj_database_url
+
+# Use PostgreSQL on Railway, SQLite locally
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+
+# Allow Railway domain
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=lambda v: [h.strip() for h in v.split(',')]
+)
+
+# Static files for production
+STATIC_ROOT = BASE_DIR / 'staticfiles'
