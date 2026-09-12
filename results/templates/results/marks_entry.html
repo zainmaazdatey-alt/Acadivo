@@ -1,0 +1,363 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}Mark Entry{% endblock %}
+{% block topbar_title %}Mark Entry{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+{% if selected_student and marks_data %}
+<button form="marks-form" type="submit" name="save_marks"
+        class="btn btn-primary">Save Marks</button>
+{% endif %}
+<a class="btn btn-secondary btn-sm" href="{% url 'marks_upload' %}">CSV Upload</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── FILTER BAR ── -->
+<form method="get" class="reveal"
+      style="display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:flex-end">
+
+  <!-- Batch -->
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Batch</div>
+    <select name="batch" class="form-select" style="width:170px" onchange="this.form.submit()">
+      <option value="">— Select Batch —</option>
+      {% for b in batches %}
+        <option value="{{ b.pk }}"
+          {% if selected_batch and selected_batch.pk == b.pk %}selected{% endif %}>
+          {{ b.get_name_display }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Semester -->
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Semester</div>
+    <select name="semester" class="form-select" style="width:150px" onchange="this.form.submit()">
+      <option value="">— Select Sem —</option>
+      {% for val, label in sem_choices %}
+        <option value="{{ val }}"
+          {% if selected_semester == val|stringformat:"s" %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Student -->
+  {% if students %}
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Student</div>
+    <select name="student" class="form-select" style="width:240px" onchange="this.form.submit()">
+      <option value="">— Select Student —</option>
+      {% for s in students %}
+        <option value="{{ s.pk }}"
+          {% if selected_student and selected_student.pk == s.pk %}selected{% endif %}>
+          {{ s.roll_number }} — {{ s.full_name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+
+</form>
+
+<!-- ── MARKS TABLE ── -->
+{% if selected_student and marks_data %}
+
+<!-- Student info strip -->
+<div class="reveal" style="
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;margin-bottom:16px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;
+              background:radial-gradient(circle at 90% 50%,rgba(157,111,255,.06),transparent 60%);
+              pointer-events:none"></div>
+  <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;
+              background:linear-gradient(135deg,var(--accent),var(--accent2));
+              display:flex;align-items:center;justify-content:center;
+              font-size:13px;font-weight:700;color:#fff;
+              box-shadow:0 0 16px rgba(157,111,255,.4)">
+    {{ selected_student.initials }}
+  </div>
+  <div>
+    <div style="font-size:14px;font-weight:700;color:var(--text)">
+      {{ selected_student.full_name }}
+    </div>
+    <div style="font-size:11px;color:var(--muted);font-family:var(--mono)">
+      {{ selected_student.roll_number }} &nbsp;·&nbsp;
+      {{ selected_batch.get_name_display }} &nbsp;·&nbsp;
+      Semester {{ selected_semester }}
+    </div>
+  </div>
+  {% if sem_result %}
+  <div style="margin-left:auto;text-align:right">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                text-transform:uppercase;letter-spacing:.06em">SGPA</div>
+    <div style="font-size:26px;font-weight:800;color:var(--accent);
+                letter-spacing:-1px;text-shadow:0 0 20px rgba(157,111,255,.5)">
+      {{ sem_result.sgpa }}
+    </div>
+    <div style="font-size:11px;{% if sem_result.is_pass %}color:var(--green){% else %}color:var(--red){% endif %}">
+      {% if sem_result.is_pass %}PASS{% else %}FAIL{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Mark entry form -->
+<form method="post" id="marks-form"
+      action="?batch={{ selected_batch.pk }}&semester={{ selected_semester }}&student={{ selected_student.pk }}"
+      class="reveal">
+  {% csrf_token %}
+  <input type="hidden" name="batch"    value="{{ selected_batch.pk }}">
+  <input type="hidden" name="semester" value="{{ selected_semester }}">
+  <input type="hidden" name="student"  value="{{ selected_student.pk }}">
+
+  <div class="table-wrap">
+    <table class="acadivo-table" id="marks-table">
+      <thead>
+        <tr>
+          <th style="width:38%">Subject</th>
+          <th>Type</th>
+          <th>
+            CE
+            <span style="font-weight:400;color:var(--muted)">/max</span>
+          </th>
+          <th>
+            ESE
+            <span style="font-weight:400;color:var(--muted)">/max</span>
+          </th>
+          <th>Total</th>
+          <th>%</th>
+          <th>Grade</th>
+          <th>GP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in marks_data %}
+        <tr data-ce-max="{{ row.subject.ce_max }}"
+            data-ese-max="{{ row.subject.ese_max }}"
+            data-total-max="{{ row.subject.total_max }}">
+
+          <!-- Subject name -->
+          <td>
+            <div style="font-weight:500;color:var(--text);font-size:12.5px">
+              {{ row.subject.name }}
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px;
+                        font-family:var(--mono)">
+              {{ row.subject.group }} &nbsp;·&nbsp; {{ row.subject.credits }} cr
+            </div>
+          </td>
+
+          <!-- Type -->
+          <td>
+            {% if row.subject.subject_type == 'TH' %}
+              <span class="type-theory">Theory</span>
+            {% else %}
+              <span class="type-practical">Practical</span>
+            {% endif %}
+          </td>
+
+          <!-- CE input -->
+          <td>
+            <div style="display:flex;align-items:center;gap:5px">
+              <input
+                class="mark-input"
+                type="number"
+                name="ce_{{ row.subject.pk }}"
+                value="{{ row.ce_val }}"
+                min="0"
+                max="{{ row.subject.ce_max }}"
+                step="0.5"
+                placeholder="0"
+                oninput="calcRow(this)"
+              >
+              <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">
+                /{{ row.subject.ce_max }}
+              </span>
+            </div>
+          </td>
+
+          <!-- ESE input -->
+          <td>
+            <div style="display:flex;align-items:center;gap:5px">
+              <input
+                class="mark-input"
+                type="number"
+                name="ese_{{ row.subject.pk }}"
+                value="{{ row.ese_val }}"
+                min="0"
+                max="{{ row.subject.ese_max }}"
+                step="0.5"
+                placeholder="0"
+                oninput="calcRow(this)"
+              >
+              <span style="font-size:10px;color:var(--muted);font-family:var(--mono)">
+                /{{ row.subject.ese_max }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Auto-calculated cells -->
+          <td class="mark-total font-mono"
+              style="font-weight:600;color:var(--text)">
+            {% if row.marks %}{{ row.marks.total_marks }}{% else %}—{% endif %}
+          </td>
+          <td class="mark-pct font-mono"
+              style="font-size:11.5px;color:var(--muted2)">
+            {% if row.marks %}{{ row.marks.percentage }}%{% else %}—{% endif %}
+          </td>
+          <td class="mark-grade">
+            {% if row.marks %}
+              <span class="badge {{ row.marks.grade|grade_badge }}">
+                {{ row.marks.grade }}
+              </span>
+            {% else %}—{% endif %}
+          </td>
+          <td class="mark-gp font-mono"
+              style="font-size:12px;color:var(--accent2)">
+            {% if row.marks %}{{ row.marks.grade_points }}{% else %}—{% endif %}
+          </td>
+
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">
+            No subjects found for this semester.
+            Make sure subjects are loaded and an elective is selected for this batch.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Save strip -->
+  {% if marks_data %}
+  <div style="display:flex;justify-content:flex-end;align-items:center;
+              gap:16px;margin-top:14px;padding-top:14px;
+              border-top:1px solid var(--border)">
+    <div style="font-size:12px;color:var(--muted2)">
+      {{ marks_data|length }} subject{{ marks_data|length|pluralize }}
+    </div>
+    <button type="submit" name="save_marks" class="btn btn-primary btn-lg">
+      Save Marks &amp; Recalculate SGPA →
+    </button>
+  </div>
+  {% endif %}
+
+</form>
+
+<!-- Prev/Next student navigation -->
+{% if students %}
+<div class="reveal" style="display:flex;gap:8px;margin-top:16px">
+  {% for s in students %}
+    {% if forloop.counter0 > 0 and students|length > 1 %}
+      {% if s.pk == selected_student.pk %}
+        {% with prev_idx=forloop.counter0|add:"-1" %}
+        {% endwith %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  <span style="font-size:12px;color:var(--muted);align-self:center">
+    Navigate students:
+  </span>
+  {% for s in students %}
+  <a href="?batch={{ selected_batch.pk }}&semester={{ selected_semester }}&student={{ s.pk }}"
+     class="btn btn-sm {% if s.pk == selected_student.pk %}btn-primary{% else %}btn-secondary{% endif %}"
+     title="{{ s.full_name }}">
+    {{ s.roll_number }}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% elif selected_batch and selected_semester and not students %}
+<div class="card reveal" style="text-align:center;padding:40px;color:var(--muted)">
+  No active students in {{ selected_batch.get_name_display }}.
+  <a href="{% url 'student_add' %}" style="color:var(--accent2)">Add students →</a>
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card reveal" style="text-align:center;padding:60px 40px">
+  <div style="font-size:40px;margin-bottom:12px">📝</div>
+  <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px">
+    Select Batch, Semester and Student
+  </div>
+  <div style="font-size:13px;color:var(--muted);max-width:380px;margin:0 auto">
+    Use the filters above to choose a batch, semester, and student,
+    then enter CE and ESE marks for each subject.
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ── LIVE MARK CALCULATION ── */
+const GRADE_SCALE = [
+  [90, 'O',  'badge-O',  10],
+  [75, 'A+', 'badge-Ap',  9],
+  [65, 'A',  'badge-A',   8],
+  [55, 'B+', 'badge-Bp',  7],
+  [50, 'B',  'badge-B',   6],
+  [40, 'C',  'badge-C',   5],
+  [0,  'F',  'badge-F',   0],
+];
+
+function getGrade(pct) {
+  for (const [min, grade, cls, gp] of GRADE_SCALE) {
+    if (pct >= min) return { grade, cls, gp };
+  }
+  return { grade: 'F', cls: 'badge-F', gp: 0 };
+}
+
+function calcRow(input) {
+  const row     = input.closest('tr');
+  const ceMax   = parseInt(row.dataset.ceMax);
+  const eseMax  = parseInt(row.dataset.eseMax);
+  const totalMax= parseInt(row.dataset.totalMax);
+
+  const inputs  = row.querySelectorAll('.mark-input');
+  const ce      = Math.min(ceMax,  Math.max(0, parseFloat(inputs[0].value) || 0));
+  const ese     = Math.min(eseMax, Math.max(0, parseFloat(inputs[1].value) || 0));
+  const tot     = ce + ese;
+  const pct     = Math.round((tot / totalMax) * 100);
+  const { grade, cls, gp } = getGrade(pct);
+
+  row.querySelector('.mark-total').textContent = tot;
+  row.querySelector('.mark-pct').textContent   = pct + '%';
+  row.querySelector('.mark-grade').innerHTML   = `<span class="badge ${cls}">${grade}</span>`;
+  row.querySelector('.mark-gp').textContent    = gp;
+
+  /* colour the total cell */
+  const totEl = row.querySelector('.mark-total');
+  if (pct >= 65)      totEl.style.color = 'var(--green)';
+  else if (pct >= 40) totEl.style.color = 'var(--accent2)';
+  else                totEl.style.color = 'var(--red)';
+
+  /* clamp input visually */
+  if (parseFloat(inputs[0].value) > ceMax)  inputs[0].value = ceMax;
+  if (parseFloat(inputs[1].value) > eseMax) inputs[1].value = eseMax;
+}
+
+/* run on page load to colour existing values */
+document.querySelectorAll('#marks-table tbody tr').forEach(row => {
+  const inputs = row.querySelectorAll('.mark-input');
+  if (inputs[0]?.value || inputs[1]?.value) calcRow(inputs[0]);
+});
+</script>
+{% endblock %}

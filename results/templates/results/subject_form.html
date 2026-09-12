@@ -1,0 +1,197 @@
+{% extends 'results/base.html' %}
+{% load static %}
+
+{% block title %}{{ action }}{% endblock %}
+{% block topbar_title %}{{ topbar_title }}{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'subject_list' %}">← Back to Subjects</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:680px">
+
+  {% if form.non_field_errors %}
+  <div class="alert alert-error reveal" style="margin-bottom:16px">
+    {% for e in form.non_field_errors %}{{ e }}{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- ── BASIC INFO ── -->
+    <div class="card reveal" style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  letter-spacing:.08em;text-transform:uppercase;
+                  padding:10px 18px;border-bottom:1px solid var(--border);
+                  margin:-16px -18px 18px;background:rgba(13,11,23,0.5)">
+        Basic Information
+      </div>
+
+      <!-- Name full width -->
+      <div class="form-group">
+        <label class="form-label">Subject Name <span style="color:var(--red)">*</span></label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="invalid-feedback" style="display:block">{{ form.name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Sem + Code side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label">Semester <span style="color:var(--red)">*</span></label>
+          {{ form.semester }}
+          {% if form.semester.errors %}
+            <div class="invalid-feedback" style="display:block">{{ form.semester.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject Code</label>
+          {{ form.code }}
+        </div>
+      </div>
+
+      <!-- Type + Group side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label">Type <span style="color:var(--red)">*</span></label>
+          {{ form.subject_type }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Group <span style="color:var(--red)">*</span></label>
+          {{ form.group }}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── MARKS + CREDITS ── -->
+    <div class="card reveal" style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  letter-spacing:.08em;text-transform:uppercase;
+                  padding:10px 18px;border-bottom:1px solid var(--border);
+                  margin:-16px -18px 18px;background:rgba(13,11,23,0.5)">
+        Marks &amp; Credits
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label">Credits <span style="color:var(--red)">*</span></label>
+          {{ form.credits }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">CE Max (Internal)</label>
+          {{ form.ce_max }}
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Max: 20</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ESE Max (Exam)</label>
+          {{ form.ese_max }}
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Max: 30</div>
+        </div>
+      </div>
+
+      <!-- Total preview -->
+      <div style="
+        background:rgba(157,111,255,.06);border:1px solid var(--border);
+        border-radius:7px;padding:10px 14px;
+        display:flex;justify-content:space-between;align-items:center;
+        margin-top:4px;
+      ">
+        <span style="font-size:12px;color:var(--muted)">Total Marks (CE + ESE)</span>
+        <span class="font-mono" style="font-size:16px;font-weight:700;color:var(--accent2)"
+              id="total-preview">
+          {% if subject %}{{ subject.total_max }}{% else %}50{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <!-- ── ELECTIVE SETTINGS ── -->
+    <div class="card reveal" style="margin-bottom:14px">
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  letter-spacing:.08em;text-transform:uppercase;
+                  padding:10px 18px;border-bottom:1px solid var(--border);
+                  margin:-16px -18px 18px;background:rgba(13,11,23,0.5)">
+        Elective Settings
+      </div>
+
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:14px 20px;align-items:start">
+
+        <!-- Checkbox -->
+        <div style="padding-top:28px;display:flex;align-items:center;gap:8px">
+          {{ form.is_elective }}
+          <label class="form-label" style="margin-bottom:0;cursor:pointer"
+                 for="{{ form.is_elective.id_for_label }}">
+            Is Elective Subject
+          </label>
+        </div>
+
+        <!-- Group code -->
+        <div class="form-group">
+          <label class="form-label">Elective Group Code</label>
+          {{ form.elective_group }}
+          {% if form.elective_group.errors %}
+            <div class="invalid-feedback" style="display:block">{{ form.elective_group.errors.0 }}</div>
+          {% endif %}
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px">
+            {{ form.elective_group.help_text }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── STATUS + ORDER ── -->
+    <div class="card reveal" style="margin-bottom:20px">
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  letter-spacing:.08em;text-transform:uppercase;
+                  padding:10px 18px;border-bottom:1px solid var(--border);
+                  margin:-16px -18px 18px;background:rgba(13,11,23,0.5)">
+        Display &amp; Status
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center">
+        <div class="form-group">
+          <label class="form-label">Display Order</label>
+          {{ form.order }}
+          <div style="font-size:10.5px;color:var(--muted);margin-top:4px">
+            {{ form.order.help_text }}
+          </div>
+        </div>
+        <div style="padding-top:18px;display:flex;align-items:center;gap:8px">
+          {{ form.is_active }}
+          <label class="form-label" style="margin-bottom:0;cursor:pointer"
+                 for="{{ form.is_active.id_for_label }}">
+            Active (visible in mark entry)
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIONS ── -->
+    <div class="reveal" style="display:flex;gap:10px">
+      <button type="submit" class="btn btn-primary btn-lg">{{ action }}</button>
+      <a href="{% url 'subject_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Live total preview
+function updateTotal() {
+  const ce  = parseInt(document.querySelector('[name=ce_max]')?.value)  || 0;
+  const ese = parseInt(document.querySelector('[name=ese_max]')?.value) || 0;
+  const el  = document.getElementById('total-preview');
+  if (el) el.textContent = ce + ese;
+}
+document.querySelectorAll('[name=ce_max],[name=ese_max]')
+  .forEach(el => el.addEventListener('input', updateTotal));
+</script>
+{% endblock %}

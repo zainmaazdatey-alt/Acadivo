@@ -1,0 +1,335 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}My Results{% endblock %}
+{% block topbar_title %}My Results{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+{% if sem_result %}
+<a class="btn btn-secondary btn-sm"
+   href="{% url 'download_marksheet' student.pk sem_result.semester %}">
+   ⬇ Download Marksheet
+</a>
+{% endif %}
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+{% if no_results %}
+<!-- ── NO RESULTS STATE ── -->
+<div class="card reveal" style="text-align:center;padding:64px 40px">
+  <div style="font-size:42px;margin-bottom:14px">📋</div>
+  <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">
+    No results published yet
+  </div>
+  <div style="font-size:13px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto">
+    Your results will appear here once your administrator publishes them.
+    Check back later or contact your college admin.
+  </div>
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary"
+     style="margin-top:20px;display:inline-flex">← Back to Dashboard</a>
+</div>
+
+{% else %}
+
+<!-- ── STUDENT HEADER ── -->
+<div class="student-hero reveal tilt-card" style="margin-bottom:20px">
+  <div class="student-avatar">{{ student.initials }}</div>
+  <div>
+    <div class="student-name">{{ student.full_name }}</div>
+    <div class="student-meta">
+      Roll No. {{ student.roll_number }} &nbsp;·&nbsp;
+      {{ student.batch.get_name_display }} &nbsp;·&nbsp;
+      Anjuman Islam Janjira Degree College of Science
+    </div>
+    <div class="student-tags" style="margin-top:8px">
+      <span class="student-tag"
+            style="background:rgba(157,111,255,.12);color:var(--accent2);
+                   border:1px solid rgba(157,111,255,.2)">
+        {{ student.batch.get_name_display }}
+      </span>
+      <span class="student-tag"
+            style="background:rgba(52,211,153,.1);color:var(--green);
+                   border:1px solid rgba(52,211,153,.2)">
+        Semester {{ sem_result.semester }}
+        &nbsp;·&nbsp;
+        {% if sem_result.is_pass %}PASS{% else %}FAIL{% endif %}
+      </span>
+    </div>
+  </div>
+
+  {% if overall %}
+  <div class="cgpa-block">
+    <div class="cgpa-label">Overall CGPA</div>
+    <div class="cgpa-value"
+         id="cgpa-value"
+         data-value="{{ overall.cgpa }}"
+         data-ms="1200">
+      {{ overall.cgpa }}
+    </div>
+    <div class="cgpa-sub">↑ {{ overall.standing }}</div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- ── SEMESTER SWITCHER ── -->
+{% if published_results.count > 1 %}
+<div class="sem-tabs reveal" style="margin-bottom:18px">
+  {% for r in published_results %}
+  <a href="{% url 'student_results' %}?sem={{ r.semester }}"
+     class="sem-tab {% if r.semester == selected_sem %}active{% endif %}">
+    Sem {{ r.semester }}
+    {% if r.is_pass %}
+      <span style="font-size:9px;margin-left:3px;opacity:.8">✓</span>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── MARKS TABLE ── -->
+<div class="reveal" style="margin-bottom:16px">
+  <div style="display:flex;justify-content:space-between;
+              align-items:center;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:600;color:var(--text)">
+      Semester {{ sem_result.semester }} — Subject-wise Marks
+    </div>
+    <a href="{% url 'download_marksheet' student.pk sem_result.semester %}"
+       class="btn btn-secondary btn-sm">⬇ PDF Marksheet</a>
+  </div>
+
+  <div class="table-wrap">
+    <table class="acadivo-table">
+      <thead>
+        <tr>
+          <th style="width:38%">Subject</th>
+          <th>Type</th>
+          <th>CE <span style="font-weight:400;color:var(--muted)">/{{ marks.first.subject.ce_max|default:20 }}</span></th>
+          <th>ESE <span style="font-weight:400;color:var(--muted)">/{{ marks.first.subject.ese_max|default:30 }}</span></th>
+          <th>Total <span style="font-weight:400;color:var(--muted)">/50</span></th>
+          <th>%</th>
+          <th>Grade</th>
+          <th>GP</th>
+          <th>Credits</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mark in marks %}
+        <tr {% if not mark.is_pass %}style="background:rgba(248,113,113,0.04)"{% endif %}>
+
+          <!-- Subject name -->
+          <td>
+            <div style="font-weight:500;color:var(--text);font-size:12.5px">
+              {{ mark.subject.name }}
+            </div>
+            <div style="font-size:10px;color:var(--muted);
+                        margin-top:2px;font-family:var(--mono)">
+              {{ mark.subject.group }}
+            </div>
+          </td>
+
+          <!-- Type badge -->
+          <td>
+            {% if mark.subject.subject_type == 'TH' %}
+              <span class="type-theory">Theory</span>
+            {% else %}
+              <span class="type-practical">Practical</span>
+            {% endif %}
+          </td>
+
+          <!-- CE -->
+          <td class="font-mono" style="color:var(--muted2)">
+            {{ mark.ce_marks }}
+          </td>
+
+          <!-- ESE -->
+          <td class="font-mono" style="color:var(--muted2)">
+            {{ mark.ese_marks }}
+          </td>
+
+          <!-- Total -->
+          <td class="font-mono fw-700"
+              style="{% if mark.is_pass %}color:var(--text)
+                     {% else %}color:var(--red){% endif %}">
+            {{ mark.total_marks }}
+          </td>
+
+          <!-- Percentage -->
+          <td class="font-mono" style="font-size:12px;color:var(--muted2)">
+            {{ mark.percentage }}%
+          </td>
+
+          <!-- Grade -->
+          <td>
+            <span class="badge {{ mark.grade|grade_badge }}">
+              {{ mark.grade }}
+            </span>
+          </td>
+
+          <!-- Grade points -->
+          <td class="font-mono fw-700" style="font-size:13px;
+            {% if mark.grade_points >= 9 %}color:var(--green)
+            {% elif mark.grade_points >= 7 %}color:var(--accent2)
+            {% elif mark.grade_points >= 5 %}color:var(--amber)
+            {% else %}color:var(--red){% endif %}">
+            {{ mark.grade_points }}
+          </td>
+
+          <!-- Credits -->
+          <td class="font-mono" style="color:var(--muted2)">
+            {{ mark.subject.credits }}
+          </td>
+
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9"
+              style="text-align:center;padding:32px;color:var(--muted)">
+            No marks found for this semester.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── RESULT SUMMARY STRIP ── -->
+<div class="reveal" style="
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:16px;
+">
+
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+      SGPA
+    </div>
+    <div style="font-size:28px;font-weight:800;letter-spacing:-1px;
+                {% if sem_result.sgpa >= 9 %}color:var(--green);
+                  text-shadow:0 0 20px rgba(52,211,153,.4);
+                {% elif sem_result.sgpa >= 7 %}color:var(--accent2);
+                {% else %}color:var(--amber);{% endif %}">
+      {{ sem_result.sgpa }}
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+      Credits Earned
+    </div>
+    <div style="font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--text)">
+      {{ sem_result.total_credits_earned }}
+      <span style="font-size:14px;color:var(--muted);font-weight:400">
+        /{{ sem_result.total_credits }}
+      </span>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+      Result
+    </div>
+    <div style="font-size:22px;font-weight:800;
+                {% if sem_result.is_pass %}color:var(--green)
+                {% else %}color:var(--red){% endif %}">
+      {% if sem_result.is_pass %}PASS{% else %}FAIL{% endif %}
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+      Standing
+    </div>
+    <div style="font-size:16px;font-weight:700;color:var(--accent2);
+                line-height:1.2;margin-top:4px">
+      {{ sem_result.standing }}
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ALL SEMESTERS SUMMARY ── -->
+{% if published_results.count > 1 %}
+<div class="card reveal" style="padding:0;overflow:hidden">
+  <div style="font-size:10px;font-weight:600;color:var(--muted);
+              letter-spacing:.08em;text-transform:uppercase;
+              padding:10px 18px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    All Semesters — SGPA History
+  </div>
+  <table class="acadivo-table">
+    <thead>
+      <tr>
+        <th>Semester</th>
+        <th>SGPA</th>
+        <th>Credits</th>
+        <th>Standing</th>
+        <th>Result</th>
+        <th style="text-align:right">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in published_results %}
+      <tr {% if r.semester == selected_sem %}class="highlight"{% endif %}>
+        <td class="font-mono" style="font-weight:600;color:var(--text)">
+          Semester {{ r.semester }}
+          {% if r.semester == selected_sem %}
+            <span class="badge badge-progress" style="font-size:9px;margin-left:4px">
+              Viewing
+            </span>
+          {% endif %}
+        </td>
+        <td class="font-mono fw-700" style="font-size:15px;
+            {% if r.sgpa >= 9 %}color:var(--green)
+            {% elif r.sgpa >= 7 %}color:var(--accent2)
+            {% else %}color:var(--amber){% endif %}">
+          {{ r.sgpa }}
+        </td>
+        <td class="font-mono" style="color:var(--muted2)">
+          {{ r.total_credits_earned }}/{{ r.total_credits }}
+        </td>
+        <td style="color:var(--muted2);font-size:12.5px">{{ r.standing }}</td>
+        <td>
+          <span class="badge {% if r.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+            {% if r.is_pass %}PASS{% else %}FAIL{% endif %}
+          </span>
+        </td>
+        <td style="text-align:right">
+          <a href="{% url 'student_results' %}?sem={{ r.semester }}"
+             class="btn btn-secondary btn-sm">View</a>
+          <a href="{% url 'download_marksheet' student.pk r.semester %}"
+             class="btn btn-secondary btn-sm">⬇ PDF</a>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if overall %}
+      <tr style="background:rgba(157,111,255,.06);border-top:1px solid var(--border)">
+        <td style="font-weight:700;color:var(--text)">Overall CGPA</td>
+        <td class="font-mono fw-700" style="font-size:18px;
+            {% if overall.cgpa >= 9 %}color:var(--green)
+            {% elif overall.cgpa >= 7 %}color:var(--accent2)
+            {% else %}color:var(--amber){% endif %}">
+          {{ overall.cgpa }}
+        </td>
+        <td class="font-mono" style="color:var(--muted2)">
+          {{ overall.semesters_completed }} sem{{ overall.semesters_completed|pluralize }}
+        </td>
+        <td style="color:var(--accent2);font-weight:600">{{ overall.standing }}</td>
+        <td>—</td>
+        <td></td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endif %}{# end no_results #}
+
+{% endblock %}

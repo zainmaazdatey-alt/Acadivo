@@ -1,0 +1,178 @@
+{% extends 'results/base.html' %}
+{% load static %}
+
+{% block title %}Students{% endblock %}
+{% block topbar_title %}Students{% endblock %}
+{% block topbar_sub %}{{ students.count }} student{{ students.count|pluralize }} found{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-primary btn-sm" href="{% url 'student_add' %}">+ Add Student</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── FILTER + SEARCH BAR ── -->
+<form method="get" action="" class="reveal"
+      style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:flex-end">
+
+  <!-- Batch filter -->
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">
+      Batch
+    </div>
+    <select name="batch" class="form-select"
+            onchange="this.form.submit()" style="width:160px">
+      <option value="">All Batches</option>
+      {% for b in batches %}
+      <option value="{{ b.name }}"
+              {% if batch_filter == b.name %}selected{% endif %}>
+        {{ b.get_name_display }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Search -->
+  <div style="flex:1;min-width:220px">
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">
+      Search
+    </div>
+    <div style="display:flex;gap:8px">
+      <input type="text" name="q" value="{{ search }}"
+             class="form-control"
+             placeholder="Name or roll number…"
+             style="flex:1">
+      <button type="submit" class="btn btn-secondary">Search</button>
+      {% if search or batch_filter %}
+      <a href="{% url 'student_list' %}" class="btn btn-secondary">Clear</a>
+      {% endif %}
+    </div>
+  </div>
+
+</form>
+
+<!-- ── STUDENT TABLE ── -->
+<div class="table-wrap reveal">
+  <table class="acadivo-table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Roll No.</th>
+        <th>Batch</th>
+        <th>Email</th>
+        <th>CGPA</th>
+        <th>Status</th>
+        <th style="text-align:right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+      <tr>
+        <!-- Avatar + Name -->
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="
+              width:32px;height:32px;border-radius:50%;flex-shrink:0;
+              background:linear-gradient(135deg,var(--accent),var(--accent2));
+              display:flex;align-items:center;justify-content:center;
+              font-size:10px;font-weight:700;color:#fff;
+              box-shadow:0 0 10px rgba(157,111,255,0.35);
+            ">{{ student.initials }}</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);font-size:12.5px">
+                {{ student.full_name }}
+              </div>
+              {% if student.phone %}
+              <div style="font-size:10px;color:var(--muted)">📱 {{ student.phone }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </td>
+
+        <!-- Roll number -->
+        <td class="font-mono" style="font-size:12px;color:var(--muted2)">
+          {{ student.roll_number }}
+        </td>
+
+        <!-- Batch -->
+        <td>
+          <span class="badge badge-progress">{{ student.batch.name }}</span>
+        </td>
+
+        <!-- Email -->
+        <td style="font-size:12px;color:var(--muted2)">
+          {{ student.email|default:"—" }}
+        </td>
+
+        <!-- CGPA -->
+        <td>
+          {% with cgpa=student.current_cgpa %}
+          {% if cgpa %}
+            <span style="
+              font-weight:800;font-size:15px;font-family:var(--font);
+              {% if cgpa >= 9 %}color:var(--green);text-shadow:0 0 10px rgba(52,211,153,0.35);
+              {% elif cgpa >= 7 %}color:var(--accent2);
+              {% else %}color:var(--amber);{% endif %}
+            ">{{ cgpa }}</span>
+          {% else %}
+            <span style="color:var(--muted);font-size:12px">No results</span>
+          {% endif %}
+          {% endwith %}
+        </td>
+
+        <!-- Status -->
+        <td>
+          {% if student.is_active %}
+            <span class="badge badge-done">Active</span>
+          {% else %}
+            <span class="badge badge-fail">Inactive</span>
+          {% endif %}
+        </td>
+
+        <!-- Actions -->
+        <td style="text-align:right;white-space:nowrap">
+          <a href="{% url 'student_edit' student.pk %}"
+             class="btn btn-secondary btn-sm">Edit</a>
+
+          <!-- Delete confirmation inline -->
+          <form method="post" action="{% url 'student_delete' student.pk %}"
+                style="display:inline"
+                onsubmit="return confirm('Deactivate {{ student.full_name }}? They will lose portal access.')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">
+              Deactivate
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align:center;padding:40px 0;color:var(--muted)">
+          {% if search or batch_filter %}
+            No students found for this filter.
+            <a href="{% url 'student_list' %}" style="color:var(--accent2)">Clear filter</a>
+          {% else %}
+            No students yet.
+            <a href="{% url 'student_add' %}" style="color:var(--accent2)">Add the first student →</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Record count footer -->
+{% if students %}
+<div style="margin-top:10px;font-size:11px;color:var(--muted);
+            font-family:var(--mono);text-align:right">
+  Showing {{ students.count }} student{{ students.count|pluralize }}
+  {% if batch_filter %}in {{ batch_filter }}{% endif %}
+  {% if search %}matching "{{ search }}"{% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

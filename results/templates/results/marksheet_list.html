@@ -1,0 +1,232 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}My Marksheets{% endblock %}
+{% block topbar_title %}My Marksheets{% endblock %}
+{% block topbar_sub %}Download your semester marksheets as PDF{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Student info strip -->
+<div class="student-hero reveal tilt-card" style="margin-bottom:22px">
+  <div class="student-avatar">{{ student.initials }}</div>
+  <div>
+    <div class="student-name">{{ student.full_name }}</div>
+    <div class="student-meta">
+      Roll No. {{ student.roll_number }} &nbsp;·&nbsp;
+      {{ student.batch.get_name_display }} &nbsp;·&nbsp;
+      Anjuman Islam Janjira Degree College of Science
+    </div>
+    <div class="student-tags" style="margin-top:8px">
+      <span class="student-tag"
+            style="background:rgba(157,111,255,.12);color:var(--accent2);
+                   border:1px solid rgba(157,111,255,.2)">
+        BSc Computer Science (NEP)
+      </span>
+      <span class="student-tag"
+            style="background:rgba(52,211,153,.1);color:var(--green);
+                   border:1px solid rgba(52,211,153,.2)">
+        {{ published.count }} Marksheet{{ published.count|pluralize }} Available
+      </span>
+    </div>
+  </div>
+  {% if overall %}
+  <div class="cgpa-block">
+    <div class="cgpa-label">Overall CGPA</div>
+    <div class="cgpa-value"
+         id="cgpa-value"
+         data-value="{{ overall.cgpa }}"
+         data-ms="1200">{{ overall.cgpa }}</div>
+    <div class="cgpa-sub">↑ {{ overall.standing }}</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if published %}
+
+<!-- Marksheet cards grid -->
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+            gap:14px;margin-bottom:20px">
+  {% for result in published %}
+  <div class="card reveal tilt-card"
+       style="padding:0;overflow:hidden;border:1px solid var(--border);
+              transition:border-color .2s,transform .22s ease-out">
+
+    <!-- Card header -->
+    <div style="padding:16px 18px;border-bottom:1px solid var(--border);
+                background:rgba(13,11,23,0.5);
+                display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;border-radius:9px;flex-shrink:0;
+                  background:linear-gradient(135deg,var(--accent),var(--accent2));
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:14px;font-weight:800;color:#fff;
+                  box-shadow:0 0 14px rgba(157,111,255,.4)">
+        {{ result.semester }}
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--text)">
+          Semester {{ result.semester }}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px;
+                    font-family:var(--mono)">
+          {% if result.published_at %}
+            Published {{ result.published_at|date:"d M Y" }}
+          {% else %}
+            Result Published
+          {% endif %}
+        </div>
+      </div>
+      <div style="margin-left:auto">
+        <span class="badge {% if result.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+          {% if result.is_pass %}PASS{% else %}FAIL{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <!-- Card body -->
+    <div style="padding:16px 18px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;
+                  gap:12px;margin-bottom:16px;text-align:center">
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.06em;
+                      margin-bottom:4px">SGPA</div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;
+            {% if result.sgpa >= 9 %}color:var(--green);
+              text-shadow:0 0 14px rgba(52,211,153,.35);
+            {% elif result.sgpa >= 7 %}color:var(--accent2);
+            {% else %}color:var(--amber);{% endif %}">
+            {{ result.sgpa }}
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.06em;
+                      margin-bottom:4px">Credits</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text)">
+            {{ result.total_credits_earned }}
+            <span style="font-size:11px;color:var(--muted);font-weight:400">
+              /{{ result.total_credits }}
+            </span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);
+                      text-transform:uppercase;letter-spacing:.06em;
+                      margin-bottom:4px">Standing</div>
+          <div style="font-size:11px;font-weight:600;color:var(--accent2);
+                      line-height:1.3;margin-top:4px">
+            {{ result.standing }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:8px">
+        <a href="{% url 'download_marksheet' student.pk result.semester %}"
+           class="btn btn-primary"
+           style="flex:1;justify-content:center">
+          ⬇ Download PDF
+        </a>
+        <a href="{% url 'student_results' %}?sem={{ result.semester }}"
+           class="btn btn-secondary">
+          View →
+        </a>
+      </div>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+<!-- All sems summary table -->
+{% if published.count > 1 %}
+<div class="card reveal" style="padding:0;overflow:hidden">
+  <div style="font-size:10px;font-weight:600;color:var(--muted);
+              letter-spacing:.08em;text-transform:uppercase;
+              padding:10px 18px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    All Semesters Overview
+  </div>
+  <table class="acadivo-table">
+    <thead>
+      <tr>
+        <th>Semester</th>
+        <th>SGPA</th>
+        <th>Credits Earned</th>
+        <th>Standing</th>
+        <th>Result</th>
+        <th style="text-align:right">Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in published %}
+      <tr>
+        <td class="font-mono" style="font-weight:600;color:var(--text)">
+          Semester {{ r.semester }}
+        </td>
+        <td class="font-mono fw-700" style="font-size:15px;
+            {% if r.sgpa >= 9 %}color:var(--green)
+            {% elif r.sgpa >= 7 %}color:var(--accent2)
+            {% else %}color:var(--amber){% endif %}">
+          {{ r.sgpa }}
+        </td>
+        <td class="font-mono" style="color:var(--muted2)">
+          {{ r.total_credits_earned }}/{{ r.total_credits }}
+        </td>
+        <td style="font-size:12px;color:var(--muted2)">{{ r.standing }}</td>
+        <td>
+          <span class="badge {% if r.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+            {% if r.is_pass %}PASS{% else %}FAIL{% endif %}
+          </span>
+        </td>
+        <td style="text-align:right">
+          <a href="{% url 'download_marksheet' student.pk r.semester %}"
+             class="btn btn-secondary btn-sm">⬇ PDF</a>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if overall %}
+      <tr style="background:rgba(157,111,255,.06);
+                 border-top:2px solid rgba(157,111,255,.2)">
+        <td style="font-weight:700;color:var(--text)">Overall CGPA</td>
+        <td class="font-mono fw-700" style="font-size:18px;
+            {% if overall.cgpa >= 9 %}color:var(--green)
+            {% elif overall.cgpa >= 7 %}color:var(--accent2)
+            {% else %}color:var(--amber){% endif %}">
+          {{ overall.cgpa }}
+        </td>
+        <td class="font-mono" style="color:var(--muted2)">
+          {{ overall.semesters_completed }} sem{{ overall.semesters_completed|pluralize }}
+        </td>
+        <td style="font-weight:600;color:var(--accent2)">{{ overall.standing }}</td>
+        <td>—</td>
+        <td></td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% else %}
+<!-- No results yet -->
+<div class="card reveal" style="text-align:center;padding:64px 40px">
+  <div style="font-size:42px;margin-bottom:14px">📄</div>
+  <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">
+    No marksheets available yet
+  </div>
+  <div style="font-size:13px;color:var(--muted);line-height:1.7;
+              max-width:380px;margin:0 auto 20px">
+    Marksheets will appear here once your administrator publishes your results.
+    Check back after your results are announced.
+  </div>
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back to Dashboard</a>
+</div>
+{% endif %}
+
+{% endblock %}

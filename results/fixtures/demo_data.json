@@ -1,0 +1,422 @@
+[
+{
+  "model": "results.marks",
+  "pk": 1,
+  "fields": {
+    "student": 1,
+    "subject": 1,
+    "semester": 1,
+    "ce_marks": "18.0",
+    "ese_marks": "26.0",
+    "total_marks": "44.0",
+    "percentage": "88.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-28T09:57:37.741Z",
+    "updated_at": "2026-08-30T18:50:17.278Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 2,
+  "fields": {
+    "student": 1,
+    "subject": 2,
+    "semester": 1,
+    "ce_marks": "17.0",
+    "ese_marks": "25.0",
+    "total_marks": "42.0",
+    "percentage": "84.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-28T09:57:37.788Z",
+    "updated_at": "2026-08-30T18:50:17.282Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 3,
+  "fields": {
+    "student": 1,
+    "subject": 3,
+    "semester": 1,
+    "ce_marks": "19.0",
+    "ese_marks": "28.0",
+    "total_marks": "47.0",
+    "percentage": "94.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-28T09:57:37.794Z",
+    "updated_at": "2026-08-30T18:50:17.286Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 4,
+  "fields": {
+    "student": 1,
+    "subject": 8,
+    "semester": 1,
+    "ce_marks": "16.0",
+    "ese_marks": "24.0",
+    "total_marks": "40.0",
+    "percentage": "80.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-28T09:57:37.800Z",
+    "updated_at": "2026-08-30T18:50:17.290Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 5,
+  "fields": {
+    "student": 1,
+    "subject": 9,
+    "semester": 1,
+    "ce_marks": "15.0",
+    "ese_marks": "22.0",
+    "total_marks": "37.0",
+    "percentage": "74.00",
+    "grade": "A",
+    "grade_points": 8,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.293Z",
+    "updated_at": "2026-08-30T18:50:17.295Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 6,
+  "fields": {
+    "student": 1,
+    "subject": 10,
+    "semester": 1,
+    "ce_marks": "17.0",
+    "ese_marks": "25.0",
+    "total_marks": "42.0",
+    "percentage": "84.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.297Z",
+    "updated_at": "2026-08-30T18:50:17.298Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 7,
+  "fields": {
+    "student": 2,
+    "subject": 23,
+    "semester": 3,
+    "ce_marks": "15.0",
+    "ese_marks": "22.0",
+    "total_marks": "37.0",
+    "percentage": "74.00",
+    "grade": "A",
+    "grade_points": 8,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.301Z",
+    "updated_at": "2026-08-30T18:50:17.302Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 8,
+  "fields": {
+    "student": 2,
+    "subject": 24,
+    "semester": 3,
+    "ce_marks": "14.0",
+    "ese_marks": "20.0",
+    "total_marks": "34.0",
+    "percentage": "68.00",
+    "grade": "A",
+    "grade_points": 8,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.305Z",
+    "updated_at": "2026-08-30T18:50:17.306Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 9,
+  "fields": {
+    "student": 2,
+    "subject": 25,
+    "semester": 3,
+    "ce_marks": "16.0",
+    "ese_marks": "24.0",
+    "total_marks": "40.0",
+    "percentage": "80.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.309Z",
+    "updated_at": "2026-08-30T18:50:17.310Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 10,
+  "fields": {
+    "student": 2,
+    "subject": 26,
+    "semester": 3,
+    "ce_marks": "18.0",
+    "ese_marks": "26.0",
+    "total_marks": "44.0",
+    "percentage": "88.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.312Z",
+    "updated_at": "2026-08-30T18:50:17.313Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 11,
+  "fields": {
+    "student": 2,
+    "subject": 27,
+    "semester": 3,
+    "ce_marks": "13.0",
+    "ese_marks": "19.0",
+    "total_marks": "32.0",
+    "percentage": "64.00",
+    "grade": "B+",
+    "grade_points": 7,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.316Z",
+    "updated_at": "2026-08-30T18:50:17.317Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 12,
+  "fields": {
+    "student": 2,
+    "subject": 29,
+    "semester": 3,
+    "ce_marks": "17.0",
+    "ese_marks": "23.0",
+    "total_marks": "40.0",
+    "percentage": "80.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.320Z",
+    "updated_at": "2026-08-30T18:50:17.321Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 13,
+  "fields": {
+    "student": 3,
+    "subject": 43,
+    "semester": 5,
+    "ce_marks": "19.0",
+    "ese_marks": "28.0",
+    "total_marks": "47.0",
+    "percentage": "94.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.323Z",
+    "updated_at": "2026-08-30T18:50:17.324Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 14,
+  "fields": {
+    "student": 3,
+    "subject": 44,
+    "semester": 5,
+    "ce_marks": "20.0",
+    "ese_marks": "29.0",
+    "total_marks": "49.0",
+    "percentage": "98.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.327Z",
+    "updated_at": "2026-08-30T18:50:17.328Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 15,
+  "fields": {
+    "student": 3,
+    "subject": 45,
+    "semester": 5,
+    "ce_marks": "18.0",
+    "ese_marks": "27.0",
+    "total_marks": "45.0",
+    "percentage": "90.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.331Z",
+    "updated_at": "2026-08-30T18:50:17.332Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 16,
+  "fields": {
+    "student": 3,
+    "subject": 46,
+    "semester": 5,
+    "ce_marks": "19.0",
+    "ese_marks": "28.0",
+    "total_marks": "47.0",
+    "percentage": "94.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.334Z",
+    "updated_at": "2026-08-30T18:50:17.335Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 17,
+  "fields": {
+    "student": 3,
+    "subject": 47,
+    "semester": 5,
+    "ce_marks": "20.0",
+    "ese_marks": "30.0",
+    "total_marks": "50.0",
+    "percentage": "100.00",
+    "grade": "O",
+    "grade_points": 10,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.338Z",
+    "updated_at": "2026-08-30T18:50:17.339Z"
+  }
+},
+{
+  "model": "results.marks",
+  "pk": 18,
+  "fields": {
+    "student": 3,
+    "subject": 52,
+    "semester": 5,
+    "ce_marks": "17.0",
+    "ese_marks": "26.0",
+    "total_marks": "43.0",
+    "percentage": "86.00",
+    "grade": "A+",
+    "grade_points": 9,
+    "is_pass": true,
+    "entered_by": 1,
+    "entered_at": "2026-08-30T18:50:17.341Z",
+    "updated_at": "2026-08-30T18:50:17.343Z"
+  }
+},
+{
+  "model": "results.semesterresult",
+  "pk": 1,
+  "fields": {
+    "student": 1,
+    "semester": 1,
+    "sgpa": "9.00",
+    "total_credits_earned": 12,
+    "total_credits": 12,
+    "is_pass": true,
+    "is_published": true,
+    "published_at": "2026-08-30T18:50:17.348Z",
+    "published_by": 1,
+    "calculated_at": "2026-08-30T18:50:17.348Z"
+  }
+},
+{
+  "model": "results.semesterresult",
+  "pk": 2,
+  "fields": {
+    "student": 2,
+    "semester": 3,
+    "sgpa": "8.14",
+    "total_credits_earned": 14,
+    "total_credits": 14,
+    "is_pass": true,
+    "is_published": true,
+    "published_at": "2026-08-30T18:50:17.356Z",
+    "published_by": 1,
+    "calculated_at": "2026-08-30T18:50:17.356Z"
+  }
+},
+{
+  "model": "results.semesterresult",
+  "pk": 3,
+  "fields": {
+    "student": 3,
+    "semester": 5,
+    "sgpa": "9.71",
+    "total_credits_earned": 14,
+    "total_credits": 14,
+    "is_pass": true,
+    "is_published": true,
+    "published_at": "2026-08-30T18:50:17.364Z",
+    "published_by": 1,
+    "calculated_at": "2026-08-30T18:50:17.364Z"
+  }
+},
+{
+  "model": "results.overallresult",
+  "pk": 1,
+  "fields": {
+    "student": 1,
+    "cgpa": "9.00",
+    "semesters_completed": 1,
+    "last_updated": "2026-08-30T18:50:17.351Z"
+  }
+},
+{
+  "model": "results.overallresult",
+  "pk": 2,
+  "fields": {
+    "student": 2,
+    "cgpa": "8.14",
+    "semesters_completed": 1,
+    "last_updated": "2026-08-30T18:50:17.359Z"
+  }
+},
+{
+  "model": "results.overallresult",
+  "pk": 3,
+  "fields": {
+    "student": 3,
+    "cgpa": "9.71",
+    "semesters_completed": 1,
+    "last_updated": "2026-08-30T18:50:17.368Z"
+  }
+}
+]

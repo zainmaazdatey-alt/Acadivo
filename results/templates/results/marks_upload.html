@@ -1,0 +1,251 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}CSV Upload{% endblock %}
+{% block topbar_title %}CSV Upload{% endblock %}
+{% block topbar_sub %}Bulk upload marks from a spreadsheet{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'marks_entry' %}">← Mark Entry</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:780px">
+
+<!-- ── HOW TO USE ── -->
+<div class="card reveal" style="margin-bottom:16px;padding:0;overflow:hidden">
+  <div style="font-size:10px;font-weight:600;color:var(--muted);
+              letter-spacing:.08em;text-transform:uppercase;
+              padding:10px 20px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    How to Upload Marks
+  </div>
+  <div style="padding:18px 20px">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:0">
+      <div style="text-align:center;padding:16px 12px;
+                  background:rgba(157,111,255,.05);border:1px solid var(--border);
+                  border-radius:9px">
+        <div style="font-size:22px;margin-bottom:8px">⬇️</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+          1. Download Template
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5">
+          Get the blank CSV for your batch and semester with all subjects pre-filled
+        </div>
+      </div>
+      <div style="text-align:center;padding:16px 12px;
+                  background:rgba(157,111,255,.05);border:1px solid var(--border);
+                  border-radius:9px">
+        <div style="font-size:22px;margin-bottom:8px">✏️</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+          2. Fill Marks
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5">
+          Enter CE and ESE marks for each student in Excel or Google Sheets
+        </div>
+      </div>
+      <div style="text-align:center;padding:16px 12px;
+                  background:rgba(157,111,255,.05);border:1px solid var(--border);
+                  border-radius:9px">
+        <div style="font-size:22px;margin-bottom:8px">⬆️</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px">
+          3. Upload CSV
+        </div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5">
+          Upload the file — grades and SGPA are auto-calculated instantly
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DOWNLOAD TEMPLATE ── -->
+<div class="card reveal" style="margin-bottom:16px;padding:0;overflow:hidden">
+  <div style="font-size:10px;font-weight:600;color:var(--muted);
+              letter-spacing:.08em;text-transform:uppercase;
+              padding:10px 20px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    Download Blank CSV Template
+  </div>
+  <div style="padding:18px 20px">
+    <form method="get" action="" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+      <input type="hidden" name="action" value="template">
+      <div>
+        <label class="form-label">Batch</label>
+        <select name="batch" class="form-select" style="width:170px" required>
+          <option value="">— Select Batch —</option>
+          {% for b in batches %}
+            <option value="{{ b.pk }}">{{ b.get_name_display }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Semester</label>
+        <select name="semester" class="form-select" style="width:150px" required>
+          <option value="">— Select —</option>
+          {% for val, label in sem_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-secondary">
+        ⬇ Download Excel Template (.xlsx)
+      </button>
+    </form>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px">
+      The template includes all students and subjects for the selected batch and semester.
+      Fill the <code class="font-mono" style="color:var(--accent2)">ce_marks</code> and
+      <code class="font-mono" style="color:var(--accent2)">ese_marks</code> columns.
+      Fill only the <strong>CE</strong> and <strong>ESE</strong> columns. Do not modify Roll Number, Student Name, or Subject columns. Total / Grade is auto-calculated by Acadivo after upload.
+    </div>
+  </div>
+</div>
+
+<!-- ── UPLOAD FORM ── -->
+<div class="card reveal" style="margin-bottom:16px;padding:0;overflow:hidden">
+  <div style="font-size:10px;font-weight:600;color:var(--muted);
+              letter-spacing:.08em;text-transform:uppercase;
+              padding:10px 20px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    Upload Completed CSV
+  </div>
+  <div style="padding:18px 20px">
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <!-- Drop zone -->
+      <label for="csv-file-input" style="
+        display:block;border:2px dashed var(--border);border-radius:10px;
+        padding:36px 20px;text-align:center;cursor:pointer;
+        transition:border-color .2s,background .2s;
+        background:rgba(157,111,255,.03);margin-bottom:14px;
+      "
+      onmouseover="this.style.borderColor='rgba(157,111,255,.4)';
+                   this.style.background='rgba(157,111,255,.06)'"
+      onmouseout="this.style.borderColor='var(--border)';
+                  this.style.background='rgba(157,111,255,.03)'">
+        <div style="font-size:28px;margin-bottom:8px">📂</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px"
+             id="csv-file-label">
+          Click to select a CSV or Excel file
+        </div>
+        <div style="font-size:11px;color:var(--muted)">
+          or drag and drop your .csv or .xlsx file here
+        </div>
+        <input type="file" name="csv_file" id="csv-file-input"
+               accept=".csv,.xlsx" style="display:none"
+               onchange="updateLabel(this)">
+      </label>
+
+      <!-- CSV format reference -->
+      <div style="background:rgba(13,11,23,0.6);border:1px solid var(--border);
+                  border-radius:8px;padding:12px 16px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;
+                    text-transform:uppercase;letter-spacing:.06em">
+          Expected CSV Columns
+        </div>
+        <code class="font-mono" style="font-size:11.5px;color:var(--accent2);line-height:1.8;display:block">roll_number, subject_id, subject_code, semester, ce_marks, ese_marks</code>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          Either <code style="color:var(--accent2)">subject_id</code> or
+          <code style="color:var(--accent2)">subject_code</code> is required.
+          Rows with existing marks are updated (not duplicated).
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg">
+        ⬆ Upload and Save Marks
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ── UPLOAD RESULT ── -->
+{% if upload_result %}
+<div class="reveal">
+
+  <!-- Summary strip -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+    <div class="card" style="text-align:center;padding:16px">
+      <div style="font-size:28px;font-weight:800;color:var(--green)">
+        {{ upload_result.saved }}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Records Saved</div>
+    </div>
+    <div class="card" style="text-align:center;padding:16px">
+      <div style="font-size:28px;font-weight:800;color:var(--amber)">
+        {{ upload_result.errors|length }}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Errors</div>
+    </div>
+    <div class="card" style="text-align:center;padding:16px">
+      <div style="font-size:28px;font-weight:800;color:var(--accent2)">
+        {% if upload_result.saved %}✓{% else %}✗{% endif %}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">
+        {% if upload_result.saved %}Marks Saved{% else %}Nothing Saved{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Error details -->
+  {% if upload_result.errors %}
+  <div class="table-wrap">
+    <table class="acadivo-table">
+      <thead>
+        <tr><th style="width:80px">Row</th><th>Error</th></tr>
+      </thead>
+      <tbody>
+        {% for row_num, error_msg in upload_result.errors %}
+        <tr>
+          <td class="font-mono" style="color:var(--amber)">{{ row_num }}</td>
+          <td style="color:var(--muted2)">{{ error_msg }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+</div>
+{% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateLabel(input) {
+  const label = document.getElementById('csv-file-label');
+  if (input.files && input.files[0]) {
+    label.textContent = '📄 ' + input.files[0].name;
+    label.style.color = 'var(--green)';
+  } else {
+    label.textContent = 'Click to select a CSV or Excel file';
+    label.style.color = 'var(--text)';
+  }
+}
+
+/* Drag and drop */
+const dropZone = document.querySelector('label[for="csv-file-input"]');
+if (dropZone) {
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.style.borderColor = 'rgba(157,111,255,.6)';
+    dropZone.style.background  = 'rgba(157,111,255,.1)';
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.style.borderColor = 'var(--border)';
+    dropZone.style.background  = 'rgba(157,111,255,.03)';
+  });
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    const input = document.getElementById('csv-file-input');
+    input.files = e.dataTransfer.files;
+    updateLabel(input);
+    dropZone.style.borderColor = 'var(--border)';
+    dropZone.style.background  = 'rgba(157,111,255,.03)';
+  });
+}
+</script>
+{% endblock %}

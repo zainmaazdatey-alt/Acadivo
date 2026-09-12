@@ -1,0 +1,440 @@
+/* ═══════════════════════════════════════════════════════════
+   ACADIVO — Custom Django Admin Theme
+   Obsidian Violet · Matches the main portal UI
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* ── TOKENS ── */
+:root {
+  --bg:        #100D1A;
+  --bg2:       #150F22;
+  --card:      #1A1628;
+  --sb:        #0D0B17;
+  --border:    rgba(157,111,255,0.15);
+  --accent:    #9D6FFF;
+  --accent2:   #BFA3FF;
+  --green:     #34D399;
+  --amber:     #FBBF24;
+  --red:       #F87171;
+  --text:      #EDE9FF;
+  --muted:     #7A70A0;
+}
+
+/* ── BASE ── */
+html, body {
+  font-family: 'Inter', sans-serif !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* ── HEADER ── */
+#header {
+  background: var(--sb) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 12px 24px !important;
+}
+#header #branding h1,
+#header #branding h1 a,
+#header #branding h1 a:visited {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  color: var(--text) !important;
+  letter-spacing: -0.3px !important;
+}
+#user-tools, #user-tools a {
+  color: var(--muted) !important;
+  font-size: 12px !important;
+}
+#user-tools a:hover { color: var(--text) !important; }
+
+/* ── NAV SIDEBAR ── */
+#nav-sidebar {
+  background: var(--sb) !important;
+  border-right: 1px solid var(--border) !important;
+}
+.toggle-nav-sidebar {
+  background: var(--sb) !important;
+  border-color: var(--border) !important;
+  color: var(--muted) !important;
+}
+#nav-sidebar .module caption,
+#nav-sidebar .current-app .module caption {
+  background: transparent !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding: 12px 16px 4px !important;
+  border: none !important;
+}
+#nav-sidebar .module table th,
+#nav-sidebar .module table td {
+  background: transparent !important;
+  border: none !important;
+}
+#nav-sidebar .module table a {
+  color: var(--muted) !important;
+  font-size: 12.5px !important;
+  padding: 5px 16px !important;
+  display: block !important;
+  border-radius: 6px !important;
+  margin: 1px 6px !important;
+  transition: all 0.14s !important;
+}
+#nav-sidebar .module table a:hover {
+  background: rgba(157,111,255,0.08) !important;
+  color: var(--text) !important;
+}
+#nav-sidebar .module table tr.selected a {
+  background: rgba(157,111,255,0.15) !important;
+  color: var(--text) !important;
+}
+
+/* ── MAIN CONTENT ── */
+#main, #content, .colMS {
+  background: var(--bg2) !important;
+}
+#content {
+  padding: 24px !important;
+}
+#content h1 {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  letter-spacing: -0.3px !important;
+  margin-bottom: 16px !important;
+}
+
+/* ── BREADCRUMBS ── */
+div.breadcrumbs {
+  background: var(--sb) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+  padding: 10px 24px !important;
+  font-size: 12px !important;
+}
+div.breadcrumbs a { color: var(--accent2) !important; }
+div.breadcrumbs a:hover { color: var(--text) !important; }
+
+/* ── MODULE / CARD BOXES ── */
+.module {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+}
+.module h2, .module caption, .inline-group h2 {
+  background: rgba(13,11,23,0.6) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 9px 16px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* ── TABLES ── */
+#result_list, .results {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border) !important;
+}
+thead th {
+  background: rgba(13,11,23,0.7) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  padding: 9px 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+  white-space: nowrap !important;
+}
+thead th a, thead th a:visited {
+  color: var(--muted) !important;
+}
+thead th a:hover { color: var(--accent2) !important; }
+#result_list tbody tr, .results tbody tr {
+  background: var(--card) !important;
+  border-bottom: 1px solid rgba(157,111,255,0.06) !important;
+  transition: background 0.12s !important;
+}
+#result_list tbody tr:hover, .results tbody tr:hover {
+  background: rgba(157,111,255,0.05) !important;
+}
+#result_list tbody tr:last-child, .results tbody tr:last-child {
+  border-bottom: none !important;
+}
+#result_list td, #result_list th.action-checkbox-column,
+.results td {
+  padding: 10px 14px !important;
+  color: var(--muted) !important;
+  font-size: 12.5px !important;
+  vertical-align: middle !important;
+}
+#result_list td a, .results td a {
+  color: var(--accent2) !important;
+  font-weight: 500 !important;
+}
+#result_list td a:hover, .results td a:hover {
+  color: var(--text) !important;
+}
+
+/* ── PAGINATION ── */
+.paginator {
+  background: var(--card) !important;
+  border-top: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  padding: 10px 14px !important;
+}
+.paginator a, .paginator a:visited {
+  color: var(--accent2) !important;
+}
+
+/* ── FORMS ── */
+.form-row {
+  border-bottom: 1px solid rgba(157,111,255,0.06) !important;
+  padding: 12px 16px !important;
+}
+.form-row:last-child { border-bottom: none !important; }
+label {
+  color: var(--muted) !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+input[type=text], input[type=password], input[type=email],
+input[type=number], input[type=url], input[type=tel],
+select, textarea {
+  background: rgba(157,111,255,0.06) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  color: var(--text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  padding: 8px 11px !important;
+  outline: none !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+input[type=text]:focus, input[type=password]:focus,
+input[type=email]:focus, select:focus, textarea:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(157,111,255,0.15) !important;
+}
+input[type=checkbox] { accent-color: var(--accent) !important; }
+.help { color: var(--muted) !important; font-size: 11px !important; }
+
+/* ── FIELDSETS ── */
+fieldset {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  margin-bottom: 14px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+fieldset h2 {
+  background: rgba(13,11,23,0.5) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 9px 16px !important;
+  border-bottom: 1px solid var(--border) !important;
+  margin: 0 !important;
+}
+
+/* ── BUTTONS ── */
+.button, input[type=submit], input[type=button],
+.submit-row input, a.button {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 7px !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  transition: all 0.15s !important;
+  box-shadow: 0 0 14px rgba(157,111,255,0.3) !important;
+}
+.button:hover, input[type=submit]:hover, a.button:hover {
+  background: #B080FF !important;
+  box-shadow: 0 0 20px rgba(157,111,255,0.5) !important;
+}
+.button.default, input[type=submit].default {
+  background: var(--accent) !important;
+}
+.deletelink, a.deletelink {
+  background: rgba(248,113,113,0.12) !important;
+  color: var(--red) !important;
+  border: 1px solid rgba(248,113,113,0.25) !important;
+  box-shadow: none !important;
+}
+.deletelink:hover { background: rgba(248,113,113,0.2) !important; }
+
+/* ── SUBMIT ROW ── */
+.submit-row {
+  background: var(--sb) !important;
+  border-top: 1px solid var(--border) !important;
+  padding: 12px 16px !important;
+  border-radius: 0 0 10px 10px !important;
+}
+
+/* ── OBJECT TOOLS ── */
+ul.object-tools li a {
+  background: rgba(157,111,255,0.1) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  color: var(--accent2) !important;
+  font-size: 12px !important;
+  padding: 5px 12px !important;
+  transition: all 0.14s !important;
+}
+ul.object-tools li a:hover {
+  background: rgba(157,111,255,0.18) !important;
+  color: var(--text) !important;
+}
+
+/* ── SEARCH BAR ── */
+#searchbar, #toolbar input[type=text] {
+  background: rgba(157,111,255,0.06) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 7px !important;
+  color: var(--text) !important;
+  font-size: 13px !important;
+  padding: 7px 12px !important;
+}
+#searchbar:focus { border-color: var(--accent) !important; }
+
+/* ── FILTER SIDEBAR ── */
+#changelist-filter {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+}
+#changelist-filter h2 {
+  background: rgba(13,11,23,0.5) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 9px 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+#changelist-filter h3 {
+  color: var(--muted) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 10px 14px 4px !important;
+}
+#changelist-filter ul li a, #changelist-filter ul li {
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  padding: 3px 14px !important;
+}
+#changelist-filter ul li a:hover { color: var(--accent2) !important; }
+#changelist-filter ul li.selected a { color: var(--accent) !important; font-weight: 600 !important; }
+
+/* ── MESSAGES / ALERTS ── */
+.messagelist li {
+  border-radius: 7px !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+}
+.messagelist li.success {
+  background: rgba(52,211,153,0.1) !important;
+  border: 1px solid rgba(52,211,153,0.25) !important;
+  color: var(--green) !important;
+}
+.messagelist li.error {
+  background: rgba(248,113,113,0.1) !important;
+  border: 1px solid rgba(248,113,113,0.25) !important;
+  color: var(--red) !important;
+}
+.messagelist li.warning {
+  background: rgba(251,191,36,0.1) !important;
+  border: 1px solid rgba(251,191,36,0.25) !important;
+  color: var(--amber) !important;
+}
+
+/* ── INLINE GROUPS ── */
+.inline-group {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  margin-bottom: 14px !important;
+}
+.tabular.inline-related thead th {
+  background: rgba(13,11,23,0.6) !important;
+}
+
+/* ── LOGIN PAGE ── */
+body.login {
+  background: var(--bg) !important;
+}
+body.login #header {
+  display: none !important;
+}
+body.login #content-main {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  padding: 36px !important;
+  box-shadow: 0 0 60px rgba(157,111,255,0.1) !important;
+}
+body.login #content-main h1 {
+  color: var(--accent2) !important;
+  font-size: 22px !important;
+  margin-bottom: 20px !important;
+  text-align: center !important;
+}
+
+/* ── DASHBOARD RECENT ACTIONS ── */
+#recent-actions-module {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+#recent-actions-module h2 {
+  background: rgba(13,11,23,0.5) !important;
+  color: var(--muted) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 9px 16px !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+#recent-actions-module ul {
+  padding: 8px 0 !important;
+}
+#recent-actions-module ul li {
+  padding: 6px 16px !important;
+  border-bottom: 1px solid rgba(157,111,255,0.06) !important;
+  font-size: 12px !important;
+}
+#recent-actions-module ul li a {
+  color: var(--accent2) !important;
+}
+
+/* ── MONO for roll numbers / codes ── */
+td:has(> a[href*="student"]) {
+  font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(157,111,255,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(157,111,255,0.4); }

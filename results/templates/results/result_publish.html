@@ -1,0 +1,295 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}Publish Results{% endblock %}
+{% block topbar_title %}Publish Results{% endblock %}
+{% block topbar_sub %}Make results visible to students and send email alerts{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm"
+   href="{% url 'result_preview' %}{% if selected_batch %}?batch={{ selected_batch.pk }}&semester={{ selected_semester }}{% endif %}">
+  ← Preview First
+</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── FILTER BAR ── -->
+<form method="get" class="reveal"
+      style="display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:flex-end">
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Batch</div>
+    <select name="batch" class="form-select" style="width:180px" onchange="this.form.submit()">
+      <option value="">— Select Batch —</option>
+      {% for b in batches %}
+        <option value="{{ b.pk }}"
+          {% if selected_batch and selected_batch.pk == b.pk %}selected{% endif %}>
+          {{ b.get_name_display }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Semester</div>
+    <select name="semester" class="form-select" style="width:150px" onchange="this.form.submit()">
+      <option value="">— Select Sem —</option>
+      {% for val, label in sem_choices %}
+        <option value="{{ val }}"
+          {% if selected_semester == val|stringformat:"s" %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if selected_batch and selected_semester %}
+
+<!-- ── READINESS TABLE ── -->
+<div class="table-wrap reveal" style="margin-bottom:20px">
+  <div style="display:flex;align-items:center;justify-content:space-between;
+              padding:12px 16px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.5)">
+    <div style="font-size:13px;font-weight:600;color:var(--text)">
+      Student Readiness — {{ selected_batch.get_name_display }}
+      Semester {{ selected_semester }}
+    </div>
+    <div style="display:flex;gap:8px">
+      {% with ready_count=publish_ready|length %}
+      <span class="badge badge-progress">{{ ready_count }} students</span>
+      {% endwith %}
+    </div>
+  </div>
+
+  <table class="acadivo-table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Roll No.</th>
+        <th>Marks Entered</th>
+        <th>SGPA</th>
+        <th>Result</th>
+        <th>Email</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in publish_ready %}
+      <tr>
+        <!-- Student -->
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:30px;height:30px;border-radius:50%;flex-shrink:0;
+                        background:linear-gradient(135deg,var(--accent),var(--accent2));
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:10px;font-weight:700;color:#fff;
+                        box-shadow:0 0 8px rgba(157,111,255,.3)">
+              {{ row.student.initials }}
+            </div>
+            <div style="font-weight:600;color:var(--text);font-size:12.5px">
+              {{ row.student.full_name }}
+            </div>
+          </div>
+        </td>
+
+        <!-- Roll -->
+        <td class="font-mono" style="font-size:11.5px;color:var(--muted)">
+          {{ row.student.roll_number }}
+        </td>
+
+        <!-- Marks count -->
+        <td class="font-mono" style="color:var(--muted2)">
+          {% if row.marks_count > 0 %}
+            <span style="color:var(--green)">{{ row.marks_count }} subjects ✓</span>
+          {% else %}
+            <span style="color:var(--red)">No marks entered</span>
+          {% endif %}
+        </td>
+
+        <!-- SGPA -->
+        <td class="font-mono fw-700" style="font-size:15px;
+          {% if row.sem_result %}
+            {% if row.sem_result.sgpa >= 9 %}color:var(--green)
+            {% elif row.sem_result.sgpa >= 7 %}color:var(--accent2)
+            {% else %}color:var(--amber){% endif %}
+          {% else %}color:var(--muted){% endif %}">
+          {% if row.sem_result %}{{ row.sem_result.sgpa }}{% else %}—{% endif %}
+        </td>
+
+        <!-- Pass/Fail -->
+        <td>
+          {% if row.sem_result %}
+            <span class="badge {% if row.sem_result.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+              {% if row.sem_result.is_pass %}PASS{% else %}FAIL{% endif %}
+            </span>
+          {% else %}
+            <span class="badge badge-pending">Not Ready</span>
+          {% endif %}
+        </td>
+
+        <!-- Email -->
+        <td style="font-size:12px;color:var(--muted2)">
+          {% if row.student.email %}
+            <span style="color:var(--green)">✓ {{ row.student.email }}</span>
+          {% else %}
+            <span style="color:var(--muted)">No email — will skip</span>
+          {% endif %}
+        </td>
+
+        <!-- Publish status -->
+        <td>
+          {% if row.already_pub %}
+            <span class="badge badge-done">Published</span>
+          {% elif row.can_publish %}
+            <span class="badge" style="background:rgba(157,111,255,.1);
+              color:var(--accent2);border:1px solid rgba(157,111,255,.25)">Ready</span>
+          {% else %}
+            <span class="badge badge-pending">Incomplete</span>
+          {% endif %}
+        </td>
+
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">
+          No active students in this batch.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ── PUBLISH CONFIRMATION FORM ── -->
+<div class="card reveal tilt-card" style="
+  padding:0;overflow:hidden;
+  border:1px solid rgba(157,111,255,.25);
+  box-shadow:0 0 40px rgba(157,111,255,.08);
+">
+  <div style="padding:16px 22px;border-bottom:1px solid var(--border);
+              background:linear-gradient(90deg,rgba(157,111,255,.12),rgba(157,111,255,.04));
+              display:flex;align-items:center;gap:12px">
+    <div style="font-size:22px">📢</div>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--text)">
+        Publish Semester {{ selected_semester }} Results
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">
+        {{ selected_batch.get_name_display }} · Academic Year 2025–26
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:22px">
+
+    <!-- What will happen -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:600;color:var(--muted);
+                  text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+        What will happen when you publish
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        {% for item in publish_steps %}
+        <div style="display:flex;align-items:center;gap:10px;
+                    font-size:13px;color:var(--muted2)">
+          <span style="width:20px;height:20px;border-radius:50%;
+                       background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3);
+                       display:flex;align-items:center;justify-content:center;
+                       flex-shrink:0;font-size:11px;color:var(--green)">
+            {{ item.icon }}
+          </span>
+          {{ item.text }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Confirmation checkbox -->
+    <label style="display:flex;align-items:flex-start;gap:12px;
+                  padding:14px;border:1px solid var(--border);border-radius:var(--r);
+                  background:rgba(157,111,255,.04);cursor:pointer;margin-bottom:20px">
+      <input type="checkbox" id="confirm-check"
+             style="margin-top:2px;accent-color:var(--accent);flex-shrink:0"
+             onchange="togglePublish()">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">
+          I confirm that I have reviewed the results and
+          they are ready to be published
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
+          This action will make Semester {{ selected_semester }} results visible to all
+          {{ selected_batch.get_name_display }} students.
+          You can republish at any time to update results.
+        </div>
+      </div>
+    </label>
+
+    <!-- Publish form -->
+    <form method="post" action="{% url 'result_publish' %}" id="publish-form">
+      {% csrf_token %}
+      <input type="hidden" name="batch"    value="{{ selected_batch.pk }}">
+      <input type="hidden" name="semester" value="{{ selected_semester }}">
+      <div style="display:flex;gap:12px;align-items:center">
+        <button type="submit" id="publish-btn"
+                class="btn btn-primary btn-lg"
+                style="opacity:.4;pointer-events:none;
+                       box-shadow:0 0 20px rgba(157,111,255,.35)"
+                disabled>
+          📢 Publish Now &amp; Send Emails
+        </button>
+        <a href="{% url 'result_preview' %}?batch={{ selected_batch.pk }}&semester={{ selected_semester }}"
+           class="btn btn-secondary btn-lg">
+          ← Back to Preview
+        </a>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card reveal" style="text-align:center;padding:60px 40px">
+  <div style="font-size:40px;margin-bottom:12px">📢</div>
+  <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">
+    Select a Batch and Semester to Publish
+  </div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:18px">
+    Use the filters above to select which results to publish.
+  </div>
+  <a href="{% url 'result_preview' %}" class="btn btn-secondary">
+    Preview Results First →
+  </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePublish() {
+  const checked = document.getElementById('confirm-check').checked;
+  const btn     = document.getElementById('publish-btn');
+  if (!btn) return;
+  btn.disabled             = !checked;
+  btn.style.opacity        = checked ? '1'    : '0.4';
+  btn.style.pointerEvents  = checked ? 'auto' : 'none';
+}
+
+// Prevent double-submit
+const form = document.getElementById('publish-form');
+if (form) {
+  form.addEventListener('submit', function() {
+    const btn = document.getElementById('publish-btn');
+    if (btn) {
+      btn.disabled        = true;
+      btn.textContent     = '⏳ Publishing…';
+      btn.style.opacity   = '0.7';
+    }
+  });
+}
+</script>
+{% endblock %}

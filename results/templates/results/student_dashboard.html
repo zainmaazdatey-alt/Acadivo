@@ -1,0 +1,364 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}My Dashboard{% endblock %}
+{% block topbar_title %}My Dashboard{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+{% if latest_result %}
+<a class="btn btn-secondary btn-sm"
+   href="{% url 'download_marksheet' student.pk latest_result.semester %}">
+   ⬇ Marksheet
+</a>
+{% endif %}
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── STUDENT HERO ── -->
+<div class="student-hero reveal tilt-card" style="margin-bottom:20px">
+  <div class="student-avatar">{{ student.initials }}</div>
+  <div>
+    <div class="student-name">{{ student.full_name }}</div>
+    <div class="student-meta">
+      Roll No. {{ student.roll_number }} &nbsp;·&nbsp;
+      Anjuman Islam Janjira Degree College of Science
+    </div>
+    <div class="student-tags" style="margin-top:8px">
+      <span class="student-tag"
+            style="background:rgba(157,111,255,.12);color:var(--accent2);
+                   border:1px solid rgba(157,111,255,.2)">
+        {{ student.batch.get_name_display }}
+      </span>
+      {% if semesters_done > 0 %}
+      <span class="student-tag"
+            style="background:rgba(52,211,153,.1);color:var(--green);
+                   border:1px solid rgba(52,211,153,.2)">
+        {{ semesters_done }} Semester{{ semesters_done|pluralize }} Complete
+      </span>
+      {% endif %}
+      {% if latest_result %}
+      <span class="student-tag"
+            style="background:rgba(52,211,153,.1);color:var(--green);
+                   border:1px solid rgba(52,211,153,.2)">
+        ✓ Sem {{ latest_result.semester }} Live
+      </span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CGPA block -->
+  <div class="cgpa-block">
+    <div class="cgpa-label">Current CGPA</div>
+    <div class="cgpa-value"
+         id="cgpa-value"
+         data-value="{{ cgpa }}"
+         data-ms="1400">
+      {% if cgpa %}{{ cgpa }}{% else %}—{% endif %}
+    </div>
+    {% if overall %}
+    <div class="cgpa-sub">
+      ↑ {{ overall.standing }}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── MAIN GRID ── -->
+<div class="grid-2">
+
+  <!-- LEFT — Latest semester result table -->
+  <div>
+    {% if latest_result %}
+    <div style="display:flex;justify-content:space-between;
+                align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--text)">
+        Semester {{ latest_result.semester }} Result
+      </div>
+      <div style="display:flex;gap:6px">
+        <a href="{% url 'student_results' %}"
+           class="btn btn-secondary btn-sm">View All →</a>
+        <a href="{% url 'download_marksheet' student.pk latest_result.semester %}"
+           class="btn btn-secondary btn-sm">⬇ PDF</a>
+      </div>
+    </div>
+
+    <!-- Sem tabs (published sems only) -->
+    {% if published_results.count > 1 %}
+    <div class="sem-tabs" style="margin-bottom:12px">
+      {% for r in published_results %}
+      <a href="{% url 'student_results' %}?sem={{ r.semester }}"
+         class="sem-tab {% if r.semester == latest_result.semester %}active{% endif %}">
+        Sem {{ r.semester }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="table-wrap reveal">
+      <table class="acadivo-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Total</th>
+            <th>Grade</th>
+            <th>GP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mark in latest_marks %}
+          <tr>
+            <td>
+              <div style="font-weight:500;color:var(--text);font-size:12.5px">
+                {{ mark.subject.name }}
+              </div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">
+                {% if mark.subject.subject_type == 'TH' %}
+                  <span class="type-theory">Theory</span>
+                {% else %}
+                  <span class="type-practical">Practical</span>
+                {% endif %}
+                &nbsp;·&nbsp; {{ mark.subject.credits }} cr
+              </div>
+            </td>
+            <td class="font-mono" style="font-size:12.5px;color:var(--text)">
+              {{ mark.total_marks }}/{{ mark.subject.total_max }}
+            </td>
+            <td>
+              <span class="badge {{ mark.grade|grade_badge }}">
+                {{ mark.grade }}
+              </span>
+            </td>
+            <td class="font-mono fw-700" style="font-size:13px;
+              {% if mark.grade_points >= 9 %}color:var(--green)
+              {% elif mark.grade_points >= 7 %}color:var(--accent2)
+              {% elif mark.grade_points >= 5 %}color:var(--amber)
+              {% else %}color:var(--red){% endif %}">
+              {{ mark.grade_points }}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4"
+                style="text-align:center;padding:28px;color:var(--muted)">
+              No marks recorded for this semester.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SGPA strip -->
+    <div class="sgpa-strip reveal">
+      <div>
+        <span style="font-size:12.5px;font-weight:600;color:var(--accent2)">
+          Semester {{ latest_result.semester }} SGPA
+        </span>
+        <span style="font-size:11px;color:var(--muted);margin-left:8px">
+          {{ latest_result.total_credits_earned }}/{{ latest_result.total_credits }} credits earned
+        </span>
+      </div>
+      <div class="sgpa-value">{{ latest_result.sgpa }}</div>
+      <span class="badge {% if latest_result.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+        {% if latest_result.is_pass %}PASS{% else %}FAIL{% endif %}
+      </span>
+    </div>
+
+    {% else %}
+    <!-- No results yet -->
+    <div class="card reveal"
+         style="text-align:center;padding:48px 32px;color:var(--muted)">
+      <div style="font-size:36px;margin-bottom:12px">📋</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px">
+        No results published yet
+      </div>
+      <div style="font-size:13px;line-height:1.6">
+        Your results will appear here once your administrator
+        publishes them. Check back soon.
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- RIGHT — Chart + Semester status -->
+  <div>
+
+    <!-- SGPA Trend Chart -->
+    {% if chart_data %}
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">
+      SGPA Trend
+    </div>
+    <div class="card reveal" style="padding:0;overflow:hidden;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                  padding:13px 16px;border-bottom:1px solid var(--border)">
+        <span style="font-size:12.5px;font-weight:600;color:var(--text)">
+          Semester Performance
+        </span>
+        <span style="font-size:11px;color:var(--green);font-weight:600">
+          ↑ {{ published_results.count }} semester{{ published_results.count|pluralize }} complete
+        </span>
+      </div>
+      <div style="padding:14px 16px">
+        <canvas id="sgpa-chart" height="160"></canvas>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Semester status grid -->
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">
+      All Semesters
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" class="reveal">
+      {% for sem in sem_status %}
+      <div style="
+        padding:12px 14px;border-radius:var(--r);
+        border:1px solid {% if sem.published %}rgba(52,211,153,.25)
+                         {% elif sem.current %}rgba(157,111,255,.25)
+                         {% else %}var(--border){% endif %};
+        background:{% if sem.published %}rgba(52,211,153,.06)
+                   {% elif sem.current %}rgba(157,111,255,.06)
+                   {% else %}var(--card){% endif %};
+        transition:border-color .2s;
+      ">
+        <div style="display:flex;justify-content:space-between;
+                    align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:600;
+                       color:{% if sem.published %}var(--green)
+                              {% elif sem.current %}var(--accent2)
+                              {% else %}var(--muted){% endif %}">
+            Sem {{ sem.num }}
+          </span>
+          {% if sem.published %}
+            <span class="badge badge-done" style="font-size:9.5px">Done</span>
+          {% elif sem.current %}
+            <span class="badge badge-progress" style="font-size:9.5px">Current</span>
+          {% else %}
+            <span class="badge" style="font-size:9.5px;
+              background:rgba(157,111,255,.06);color:var(--muted);
+              border:1px solid var(--border)">Upcoming</span>
+          {% endif %}
+        </div>
+        {% if sem.result %}
+        <div class="font-mono"
+             style="font-size:15px;font-weight:700;
+                    color:{% if sem.result.sgpa >= 9 %}var(--green)
+                           {% elif sem.result.sgpa >= 7 %}var(--accent2)
+                           {% else %}var(--amber){% endif %}">
+          {{ sem.result.sgpa }}
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px">SGPA</div>
+        {% else %}
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">
+          {% if sem.current %}Awaiting results{% else %}—{% endif %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Grade legend -->
+    <div style="margin-top:12px" class="reveal">
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  letter-spacing:.08em;text-transform:uppercase;
+                  margin-bottom:8px">Grading Scale (NEP 10-pt)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        <span class="badge badge-O">O · 90–100%</span>
+        <span class="badge badge-Ap">A+ · 75–89%</span>
+        <span class="badge badge-A">A · 65–74%</span>
+        <span class="badge badge-Bp">B+ · 55–64%</span>
+        <span class="badge badge-B">B · 50–54%</span>
+        <span class="badge badge-C">C · 40–49%</span>
+        <span class="badge badge-F">F · &lt;40%</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ── SGPA Chart ── */
+{% if chart_data %}
+(function() {
+  const ctx = document.getElementById('sgpa-chart');
+  if (!ctx) return;
+
+  const labels = {{ chart_labels|safe }};
+  const data   = {{ chart_data|safe }};
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'SGPA',
+        data,
+        borderColor:     '#9D6FFF',
+        backgroundColor: (ctx) => {
+          const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 160);
+          gradient.addColorStop(0, 'rgba(157,111,255,0.18)');
+          gradient.addColorStop(1, 'rgba(157,111,255,0)');
+          return gradient;
+        },
+        borderWidth:    2.2,
+        pointBackgroundColor: (ctx) => {
+          const idx = ctx.dataIndex;
+          return idx === data.length - 1 ? '#BFA3FF' : '#9D6FFF';
+        },
+        pointBorderColor:  '#1A1628',
+        pointBorderWidth:  2,
+        pointRadius:       (ctx) => ctx.dataIndex === data.length - 1 ? 6 : 4,
+        tension:           0.3,
+        fill:              true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A1628',
+          borderColor:     'rgba(157,111,255,0.3)',
+          borderWidth:     1,
+          titleColor:      '#BFA3FF',
+          bodyColor:       '#EDE9FF',
+          padding:         10,
+          callbacks: {
+            label: (ctx) => ` SGPA: ${ctx.parsed.y.toFixed(2)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid:  { color: 'rgba(157,111,255,0.08)' },
+          ticks: { color: '#5A5080', font: { family: "'IBM Plex Mono'", size: 11 } }
+        },
+        y: {
+          min:   6,
+          max:   10,
+          grid:  { color: 'rgba(157,111,255,0.08)' },
+          ticks: {
+            color:    '#5A5080',
+            stepSize: 1,
+            font:     { family: "'IBM Plex Mono'", size: 11 }
+          }
+        }
+      },
+      animation: {
+        duration: 1000,
+        easing:   'easeOutQuart',
+      }
+    }
+  });
+})();
+{% endif %}
+</script>
+{% endblock %}

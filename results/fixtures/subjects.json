@@ -1,0 +1,1199 @@
+[
+  {
+    "model": "results.batch",
+    "pk": 1,
+    "fields": {
+      "name": "FY",
+      "academic_year": "2025-26",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "results.batch",
+    "pk": 2,
+    "fields": {
+      "name": "SY",
+      "academic_year": "2025-26",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "results.batch",
+    "pk": 3,
+    "fields": {
+      "name": "TY",
+      "academic_year": "2025-26",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 1,
+    "fields": {
+      "semester": 1,
+      "code": "1101111",
+      "name": "Major: DSA (Digital System & Architecture)",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 2,
+    "fields": {
+      "semester": 1,
+      "code": "1101112",
+      "name": "Major: Fundamental of Data Base",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 3,
+    "fields": {
+      "semester": 1,
+      "code": "1101113",
+      "name": "Practical-I (Computer Science)",
+      "subject_type": "PR",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 4,
+    "fields": {
+      "semester": 1,
+      "code": "1281311",
+      "name": "Marketing Mix",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "OE1_S1",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 5,
+    "fields": {
+      "semester": 1,
+      "code": "1161311",
+      "name": "Open Elective in Accounting & Finance Paper-I",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "OE2_S1",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 6,
+    "fields": {
+      "semester": 1,
+      "code": "1101411",
+      "name": "Practical (Introduction to Programming with Python)",
+      "subject_type": "PR",
+      "group": "VSEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "VSEC1_S1",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 7,
+    "fields": {
+      "semester": 1,
+      "code": "1101412",
+      "name": "Practical (Statistics with R Programming)",
+      "subject_type": "PR",
+      "group": "VSEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "VSEC2_S1",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 8,
+    "fields": {
+      "semester": 1,
+      "code": "2511511",
+      "name": "Introduction to Communication Skills in English BSc",
+      "subject_type": "TH",
+      "group": "AEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 9,
+    "fields": {
+      "semester": 1,
+      "code": "2541516",
+      "name": "Environmental Management & Sustainable Development-I",
+      "subject_type": "TH",
+      "group": "VEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 10,
+    "fields": {
+      "semester": 1,
+      "code": "2531511",
+      "name": "Indian Knowledge System",
+      "subject_type": "TH",
+      "group": "IKS",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 11,
+    "fields": {
+      "semester": 1,
+      "code": "2521612",
+      "name": "National Service Scheme",
+      "subject_type": "TH",
+      "group": "CC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 11
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 12,
+    "fields": {
+      "semester": 2,
+      "code": "1102111",
+      "name": "Design & Analysis of Algorithms",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 13,
+    "fields": {
+      "semester": 2,
+      "code": "1101112",
+      "name": "Object Oriented Programming",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 14,
+    "fields": {
+      "semester": 2,
+      "code": "1102113",
+      "name": "Computer Science Practical 2",
+      "subject_type": "PR",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 15,
+    "fields": {
+      "semester": 2,
+      "code": "1282211",
+      "name": "Industry & Service Management I (Basics of I & S)",
+      "subject_type": "TH",
+      "group": "Minor",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 16,
+    "fields": {
+      "semester": 2,
+      "code": "1282311",
+      "name": "Marketing Mix II",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "OE1_S2",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 17,
+    "fields": {
+      "semester": 2,
+      "code": "1162311",
+      "name": "Open Elective in Accounting & Finance Paper-III",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "OE2_S2",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 18,
+    "fields": {
+      "semester": 2,
+      "code": "1102311",
+      "name": "Web Technologies",
+      "subject_type": "TH",
+      "group": "VSC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 19,
+    "fields": {
+      "semester": 2,
+      "code": "1102413",
+      "name": "Advanced Python Programming",
+      "subject_type": "TH",
+      "group": "AEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 20,
+    "fields": {
+      "semester": 2,
+      "code": "2542511",
+      "name": "Environmental Management & Sustainable Development-II",
+      "subject_type": "TH",
+      "group": "VEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 21,
+    "fields": {
+      "semester": 2,
+      "code": "2512515",
+      "name": "Urdu Communication Skill-I (B.Sc) / Hindi Bhasha-Kaushal Ke Aadhaar",
+      "subject_type": "TH",
+      "group": "AEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "AEC_S2",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 22,
+    "fields": {
+      "semester": 2,
+      "code": "2522617",
+      "name": "National Service Scheme",
+      "subject_type": "TH",
+      "group": "CC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 11
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 23,
+    "fields": {
+      "semester": 3,
+      "code": "1103111",
+      "name": "Principles of Operating Systems",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 24,
+    "fields": {
+      "semester": 3,
+      "code": "1103112",
+      "name": "Theory of Computation",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 25,
+    "fields": {
+      "semester": 3,
+      "code": "1103113",
+      "name": "Data Structures",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 26,
+    "fields": {
+      "semester": 3,
+      "code": "1103114",
+      "name": "Computer Science Practical 3",
+      "subject_type": "PR",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 27,
+    "fields": {
+      "semester": 3,
+      "code": "1253211",
+      "name": "Industry & Service Management II (Strategic Financial Management)",
+      "subject_type": "TH",
+      "group": "Minor",
+      "credits": 4,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 28,
+    "fields": {
+      "semester": 3,
+      "code": "1163311",
+      "name": "Open Elective in Accounting & Finance Paper V",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 29,
+    "fields": {
+      "semester": 3,
+      "code": "1103411",
+      "name": "Java Programming",
+      "subject_type": "PR",
+      "group": "VSC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 30,
+    "fields": {
+      "semester": 3,
+      "code": "2513511",
+      "name": "Hindi Bhasha Vyavharik Prayog / Urdu Communication Skill-II (MIL)",
+      "subject_type": "TH",
+      "group": "AEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "AEC_S3",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 31,
+    "fields": {
+      "semester": 3,
+      "code": "2523620",
+      "name": "National Service Scheme (Study of Indian Social Reformers)",
+      "subject_type": "TH",
+      "group": "CC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 32,
+    "fields": {
+      "semester": 3,
+      "code": "2523625",
+      "name": "Field Project",
+      "subject_type": "PR",
+      "group": "FP",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 33,
+    "fields": {
+      "semester": 4,
+      "code": "1104111",
+      "name": "Computer Networks",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 34,
+    "fields": {
+      "semester": 4,
+      "code": "1104112",
+      "name": "Software Engineering",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 35,
+    "fields": {
+      "semester": 4,
+      "code": "1104113",
+      "name": "IoT Technologies",
+      "subject_type": "TH",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 36,
+    "fields": {
+      "semester": 4,
+      "code": "1104114",
+      "name": "Computer Science Practical 4",
+      "subject_type": "PR",
+      "group": "Major",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 37,
+    "fields": {
+      "semester": 4,
+      "code": "1674211",
+      "name": "Industry & Service Management III (Project & Customer Relationship Management)",
+      "subject_type": "TH",
+      "group": "Minor",
+      "credits": 4,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 38,
+    "fields": {
+      "semester": 4,
+      "code": "1723312",
+      "name": "O.E. Environment Management & Sustainable Development-I",
+      "subject_type": "TH",
+      "group": "OE",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 39,
+    "fields": {
+      "semester": 4,
+      "code": "1104412",
+      "name": "MEAN Stack Development",
+      "subject_type": "PR",
+      "group": "SEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 40,
+    "fields": {
+      "semester": 4,
+      "code": "2514511",
+      "name": "Introduction to Communication Skills in English II (B.Sc)",
+      "subject_type": "TH",
+      "group": "AEC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 41,
+    "fields": {
+      "semester": 4,
+      "code": "2524624",
+      "name": "National Service Scheme (Study of Indian Social Reformers)",
+      "subject_type": "TH",
+      "group": "CC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 42,
+    "fields": {
+      "semester": 4,
+      "code": "2524630",
+      "name": "Community Engagement Projects (CEP)",
+      "subject_type": "PR",
+      "group": "CEP",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 43,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Artificial Intelligence",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 44,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Cyber & Information Security",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 45,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Moral & Ethical AI",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 46,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Computer Science Practical 5",
+      "subject_type": "PR",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 47,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "MJP6: Mini Project-I",
+      "subject_type": "PR",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 48,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "MJEL1: Software Testing & Quality Assurance",
+      "subject_type": "TH",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJEL_S5",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 49,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "MJEL2: Wireless & Sensor Networks",
+      "subject_type": "TH",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJEL_S5",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 50,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "MJELP1: Software Testing & QA Practical",
+      "subject_type": "PR",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJELP_S5",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 51,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "MJELP2: Wireless & Sensor Networks Practical",
+      "subject_type": "PR",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJELP_S5",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 52,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Minor (University List)",
+      "subject_type": "TH",
+      "group": "Minor",
+      "credits": 4,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 53,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "VSC 2: Ethical Hacking",
+      "subject_type": "TH",
+      "group": "VSC",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 11
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 54,
+    "fields": {
+      "semester": 5,
+      "code": "",
+      "name": "Field Project / Community Engagement Programme",
+      "subject_type": "PR",
+      "group": "FP",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 12
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 55,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Data Science",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 1
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 56,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Cloud Computing",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 2
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 57,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Software Project Management",
+      "subject_type": "TH",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 3
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 58,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Computer Science Practical 6",
+      "subject_type": "PR",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 4
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 59,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Mini Project-II",
+      "subject_type": "PR",
+      "group": "Mandatory",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 5
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 60,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Information Retrieval",
+      "subject_type": "TH",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJEL_S6",
+      "is_active": true,
+      "order": 6
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 61,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Linux Server Administration",
+      "subject_type": "TH",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJEL_S6",
+      "is_active": true,
+      "order": 7
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 62,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Information Retrieval Practical",
+      "subject_type": "PR",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJELP_S6",
+      "is_active": true,
+      "order": 8
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 63,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Linux Server Administration Practical",
+      "subject_type": "PR",
+      "group": "Elective",
+      "credits": 2,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": true,
+      "elective_group": "MJELP_S6",
+      "is_active": true,
+      "order": 9
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 64,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "Minor (University List)",
+      "subject_type": "TH",
+      "group": "Minor",
+      "credits": 4,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 10
+    }
+  },
+  {
+    "model": "results.subject",
+    "pk": 65,
+    "fields": {
+      "semester": 6,
+      "code": "",
+      "name": "On Job Training (OJT)",
+      "subject_type": "PR",
+      "group": "OJT",
+      "credits": 4,
+      "ce_max": 20,
+      "ese_max": 30,
+      "is_elective": false,
+      "elective_group": "",
+      "is_active": true,
+      "order": 11
+    }
+  }
+]

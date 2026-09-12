@@ -1,0 +1,314 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}Result Preview{% endblock %}
+{% block topbar_title %}Result Preview{% endblock %}
+{% block topbar_sub %}Review calculated results before publishing{% endblock %}
+
+{% block topbar_actions %}
+{% if selected_batch and selected_semester and preview_data %}
+<a class="btn btn-primary btn-sm"
+   href="{% url 'result_publish' %}?batch={{ selected_batch.pk }}&semester={{ selected_semester }}">
+   📢 Go to Publish →
+</a>
+{% endif %}
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── FILTER BAR ── -->
+<form method="get" class="reveal"
+      style="display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:flex-end">
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Batch</div>
+    <select name="batch" class="form-select" style="width:180px" onchange="this.form.submit()">
+      <option value="">— Select Batch —</option>
+      {% for b in batches %}
+        <option value="{{ b.pk }}"
+          {% if selected_batch and selected_batch.pk == b.pk %}selected{% endif %}>
+          {{ b.get_name_display }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);
+                letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Semester</div>
+    <select name="semester" class="form-select" style="width:150px" onchange="this.form.submit()">
+      <option value="">— Select Sem —</option>
+      {% for val, label in sem_choices %}
+        <option value="{{ val }}"
+          {% if selected_semester == val|stringformat:"s" %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
+
+{% if selected_batch and selected_semester %}
+
+<!-- ── SUMMARY STRIP ── -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+            margin-bottom:20px" class="reveal">
+
+  <div class="stat-card card-glow-top violet tilt-card">
+    <div class="orb" style="background:var(--accent)"></div>
+    <div class="stat-label">Total Students</div>
+    <div class="stat-value text-accent2">{{ preview_data|length }}</div>
+    <div class="stat-meta">
+      <span class="stat-dot"
+            style="background:var(--accent);box-shadow:0 0 6px var(--accent)"></span>
+      {{ selected_batch.get_name_display }}
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top green tilt-card">
+    <div class="orb" style="background:var(--green)"></div>
+    <div class="stat-label">Pass</div>
+    <div class="stat-value text-green">{{ total_pass }}</div>
+    <div class="stat-meta">
+      <span class="stat-dot"
+            style="background:var(--green);box-shadow:0 0 6px var(--green)"></span>
+      Students passed
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top amber tilt-card">
+    <div class="orb" style="background:var(--red)"></div>
+    <div class="stat-label">Fail</div>
+    <div class="stat-value" style="color:var(--red)">{{ total_fail }}</div>
+    <div class="stat-meta">
+      <span class="stat-dot"
+            style="background:var(--red);box-shadow:0 0 6px var(--red)"></span>
+      Students failed
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top violet tilt-card">
+    <div class="orb" style="background:var(--accent2)"></div>
+    <div class="stat-label">Status</div>
+    <div class="stat-value" style="font-size:18px;margin-top:4px;
+      {% if already_published %}color:var(--green){% else %}color:var(--amber){% endif %}">
+      {% if already_published %}Published{% else %}Draft{% endif %}
+    </div>
+    <div class="stat-meta">
+      <span class="stat-dot"
+            style="{% if already_published %}background:var(--green);box-shadow:0 0 6px var(--green)
+                   {% else %}background:var(--amber);box-shadow:0 0 6px var(--amber){% endif %}">
+      </span>
+      Sem {{ selected_semester }} results
+    </div>
+  </div>
+
+</div>
+
+<!-- Already published banner -->
+{% if already_published %}
+<div class="alert alert-info reveal" style="margin-bottom:16px">
+  ✓ Results for <strong>{{ selected_batch.get_name_display }} Semester {{ selected_semester }}</strong>
+  are already published and visible to students.
+  Publishing again will update any recalculated SGPAs and resend email notifications.
+</div>
+{% endif %}
+
+<!-- ── PREVIEW TABLE ── -->
+<div class="table-wrap reveal">
+  <table class="acadivo-table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Roll No.</th>
+        <th>Subjects</th>
+        <th>SGPA</th>
+        <th>Credits</th>
+        <th>Standing</th>
+        <th>Result</th>
+        <th style="text-align:right">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in preview_data %}
+      <tr {% if row.sem_result and not row.sem_result.is_pass %}
+            style="background:rgba(248,113,113,0.04)"
+          {% elif row.sem_result and row.sem_result.sgpa >= 9 %}
+            class="highlight"
+          {% endif %}>
+
+        <!-- Student -->
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:30px;height:30px;border-radius:50%;flex-shrink:0;
+                        background:linear-gradient(135deg,var(--accent),var(--accent2));
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:10px;font-weight:700;color:#fff;
+                        box-shadow:0 0 10px rgba(157,111,255,.3)">
+              {{ row.student.initials }}
+            </div>
+            <div style="font-weight:600;color:var(--text);font-size:12.5px">
+              {{ row.student.full_name }}
+            </div>
+          </div>
+        </td>
+
+        <!-- Roll -->
+        <td class="font-mono" style="font-size:11.5px;color:var(--muted)">
+          {{ row.student.roll_number }}
+        </td>
+
+        <!-- Subjects entered -->
+        <td class="font-mono" style="color:var(--muted2)">
+          {% if row.has_marks %}
+            {{ row.marks|length }}
+          {% else %}
+            <span style="color:var(--red)">0 — no marks</span>
+          {% endif %}
+        </td>
+
+        <!-- SGPA -->
+        <td>
+          {% if row.sem_result %}
+            <span class="font-mono fw-700" style="font-size:16px;
+              {% if row.sem_result.sgpa >= 9 %}color:var(--green);
+                text-shadow:0 0 10px rgba(52,211,153,.3);
+              {% elif row.sem_result.sgpa >= 7 %}color:var(--accent2);
+              {% else %}color:var(--amber);{% endif %}">
+              {{ row.sem_result.sgpa }}
+            </span>
+          {% else %}
+            <span style="color:var(--muted);font-size:12px">Not calculated</span>
+          {% endif %}
+        </td>
+
+        <!-- Credits -->
+        <td class="font-mono" style="color:var(--muted2)">
+          {% if row.sem_result %}
+            {{ row.sem_result.total_credits_earned }}/{{ row.sem_result.total_credits }}
+          {% else %}—{% endif %}
+        </td>
+
+        <!-- Standing -->
+        <td style="font-size:12px;color:var(--muted2)">
+          {% if row.sem_result %}{{ row.sem_result.standing }}{% else %}—{% endif %}
+        </td>
+
+        <!-- Pass/Fail -->
+        <td>
+          {% if row.sem_result %}
+            <span class="badge {% if row.sem_result.is_pass %}badge-pass{% else %}badge-fail{% endif %}">
+              {% if row.sem_result.is_pass %}PASS{% else %}FAIL{% endif %}
+            </span>
+          {% elif not row.has_marks %}
+            <span class="badge badge-pending">No Marks</span>
+          {% else %}
+            <span class="badge" style="background:rgba(157,111,255,.1);
+              color:var(--muted);border:1px solid var(--border)">Pending</span>
+          {% endif %}
+        </td>
+
+        <!-- Expand toggle -->
+        <td style="text-align:right">
+          {% if row.has_marks %}
+          <button onclick="toggleDetails({{ forloop.counter0 }})"
+                  class="btn btn-secondary btn-sm"
+                  id="btn-{{ forloop.counter0 }}">
+            + Details
+          </button>
+          {% endif %}
+        </td>
+
+      </tr>
+
+      <!-- Expandable mark details -->
+      {% if row.has_marks %}
+      <tr id="details-{{ forloop.counter0 }}" style="display:none">
+        <td colspan="8" style="padding:0;background:rgba(13,11,23,0.4)">
+          <table style="width:100%;font-size:11.5px;border-collapse:collapse">
+            <thead>
+              <tr style="background:rgba(13,11,23,0.6)">
+                <th style="padding:7px 28px;text-align:left;color:var(--muted);
+                           font-size:10px;font-weight:600;letter-spacing:.07em;
+                           text-transform:uppercase">Subject</th>
+                <th style="padding:7px 14px;color:var(--muted);font-size:10px;
+                           font-weight:600;letter-spacing:.07em;text-transform:uppercase">CE</th>
+                <th style="padding:7px 14px;color:var(--muted);font-size:10px;
+                           font-weight:600;letter-spacing:.07em;text-transform:uppercase">ESE</th>
+                <th style="padding:7px 14px;color:var(--muted);font-size:10px;
+                           font-weight:600;letter-spacing:.07em;text-transform:uppercase">Total</th>
+                <th style="padding:7px 14px;color:var(--muted);font-size:10px;
+                           font-weight:600;letter-spacing:.07em;text-transform:uppercase">Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for mark in row.marks %}
+              <tr style="border-bottom:1px solid rgba(157,111,255,.06)">
+                <td style="padding:7px 28px;color:var(--text)">{{ mark.subject.name }}</td>
+                <td style="padding:7px 14px;font-family:var(--mono);color:var(--muted2)">
+                  {{ mark.ce_marks }}</td>
+                <td style="padding:7px 14px;font-family:var(--mono);color:var(--muted2)">
+                  {{ mark.ese_marks }}</td>
+                <td style="padding:7px 14px;font-family:var(--mono);font-weight:600;
+                           color:var(--text)">{{ mark.total_marks }}</td>
+                <td style="padding:7px 14px">
+                  <span class="badge {{ mark.grade|grade_badge }}">{{ mark.grade }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      {% endif %}
+
+      {% empty %}
+      <tr>
+        <td colspan="8" style="text-align:center;padding:36px;color:var(--muted)">
+          No students found in this batch.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ── PUBLISH CTA ── -->
+<div class="reveal" style="display:flex;justify-content:flex-end;
+            gap:12px;margin-top:18px;align-items:center">
+  <span style="font-size:12px;color:var(--muted)">
+    Ready to publish? Go to the Publish page to make results live.
+  </span>
+  <a class="btn btn-primary btn-lg"
+     href="{% url 'result_publish' %}?batch={{ selected_batch.pk }}&semester={{ selected_semester }}">
+    📢 Publish Results →
+  </a>
+</div>
+
+{% else %}
+<!-- Empty state -->
+<div class="card reveal" style="text-align:center;padding:60px 40px">
+  <div style="font-size:40px;margin-bottom:12px">👁️</div>
+  <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px">
+    Select a Batch and Semester to Preview
+  </div>
+  <div style="font-size:13px;color:var(--muted)">
+    Use the filters above to review results before publishing.
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleDetails(idx) {
+  const row = document.getElementById('details-' + idx);
+  const btn = document.getElementById('btn-' + idx);
+  if (!row) return;
+  const visible = row.style.display !== 'none';
+  row.style.display = visible ? 'none' : 'table-row';
+  btn.textContent   = visible ? '+ Details' : '− Hide';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Acadivo</title>
+  <link rel="stylesheet" href="{% static 'results/css/acadivo.css' %}">
+  <style>
+    /* Login is completely standalone — no sidebar, no topbar */
+    body { overflow: hidden; }
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      position: relative;
+      z-index: 1;
+    }
+    /* Left panel */
+    .login-left {
+      background: var(--sb);
+      padding: 52px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-left::before {
+      content:'';position:absolute;top:-80px;left:-80px;
+      width:320px;height:320px;border-radius:50%;
+      background:radial-gradient(circle,rgba(157,111,255,.15),transparent 70%);
+    }
+    .login-left::after {
+      content:'';position:absolute;bottom:-60px;right:-60px;
+      width:260px;height:260px;border-radius:50%;
+      background:radial-gradient(circle,rgba(191,163,255,.1),transparent 70%);
+    }
+    .login-brand {
+      display:flex;align-items:center;gap:10px;
+      font-weight:700;font-size:19px;color:var(--text);
+      text-decoration:none;position:relative;z-index:1;
+    }
+    .login-brand-mark {
+      width:30px;height:30px;background:var(--accent);border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:800;color:#fff;
+      box-shadow:0 0 14px rgba(157,111,255,.55);
+    }
+    .login-tagline {
+      font-size:clamp(28px,3.5vw,40px);font-weight:800;
+      color:var(--text);line-height:1.2;letter-spacing:-.8px;
+      margin-bottom:14px;position:relative;z-index:1;
+    }
+    .login-tagline .grad {
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .login-desc {
+      font-size:14px;color:var(--muted2);line-height:1.75;
+      max-width:300px;position:relative;z-index:1;
+    }
+    .login-facts {
+      display:flex;gap:32px;position:relative;z-index:1;
+    }
+    .login-fact-num {
+      font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.5px;
+    }
+    .login-fact-lbl { font-size:11px;color:var(--muted);margin-top:2px; }
+    /* Right panel */
+    .login-right {
+      background:var(--card);
+      padding: 0 48px;
+      display:flex;flex-direction:column;justify-content:center;
+      border-left:1px solid var(--border);
+      overflow-y: auto;
+    }
+    .login-eyebrow {
+      font-family:var(--mono);font-size:10px;font-weight:600;
+      color:var(--muted);letter-spacing:.12em;text-transform:uppercase;
+      margin-bottom:18px;
+    }
+    .login-title {
+      font-size:24px;font-weight:800;color:var(--text);
+      letter-spacing:-.4px;margin-bottom:4px;
+    }
+    .login-subtitle { font-size:13px;color:var(--muted2);margin-bottom:24px; }
+    .login-footer {
+      font-size:11.5px;color:var(--muted);text-align:center;
+      margin-top:20px;line-height:1.6;
+    }
+    /* Role switch */
+    .role-switch {
+      display:flex;background:rgba(157,111,255,.06);
+      border:1px solid var(--border);border-radius:8px;
+      padding:3px;margin-bottom:22px;
+    }
+    .role-option {
+      flex:1;padding:8px;text-align:center;border-radius:6px;
+      font-size:13px;font-weight:500;color:var(--muted2);
+      cursor:pointer;transition:all .15s;user-select:none;
+      border:1px solid transparent;
+    }
+    .role-option.active {
+      background:rgba(157,111,255,.15);color:var(--text);
+      border-color:rgba(157,111,255,.3);
+      box-shadow:0 0 12px rgba(157,111,255,.2);
+    }
+    /* Message styling */
+    .msg-error {
+      background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);
+      color:var(--red);border-radius:7px;padding:10px 14px;
+      font-size:13px;margin-bottom:16px;
+    }
+    .msg-success {
+      background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);
+      color:var(--green);border-radius:7px;padding:10px 14px;
+      font-size:13px;margin-bottom:16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Intro loader -->
+<div id="intro-loader">
+  <div class="intro-logo">
+    <div class="intro-logo-mark">A</div>
+    <div class="intro-logo-text">Acadivo</div>
+  </div>
+  <div class="intro-sub">Result Portal · Sign In</div>
+  <div class="intro-progress"><div class="intro-progress-fill"></div></div>
+</div>
+
+<!-- Particle canvas -->
+<canvas id="acadivo-canvas"></canvas>
+
+<div class="login-wrap tilt-card">
+
+  <!-- LEFT PANEL -->
+  <div class="login-left">
+    <a class="login-brand" href="#">
+      <div class="login-brand-mark">A</div>
+      Acadivo
+    </a>
+
+    <div style="position:relative;z-index:1">
+      <div class="login-tagline">
+        Academic results,<br>
+        <span class="grad">elevated.</span>
+      </div>
+      <p class="login-desc">
+        The official result portal for BSc Computer Science —
+        Anjuman Islam Janjira Degree College of Science.
+        NEP grading, all 6 semesters, one place.
+      </p>
+    </div>
+
+    <div class="login-facts">
+      <div>
+        <div class="login-fact-num">3</div>
+        <div class="login-fact-lbl">Year Batches</div>
+      </div>
+      <div>
+        <div class="login-fact-num">6</div>
+        <div class="login-fact-lbl">Semesters</div>
+      </div>
+      <div>
+        <div class="login-fact-num">10pt</div>
+        <div class="login-fact-lbl">NEP Scale</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="login-right">
+    <div class="login-eyebrow">Secure Access</div>
+    <div class="login-title">Welcome back</div>
+    <p class="login-subtitle">Sign in to your Acadivo account.</p>
+
+    <!-- Role switch -->
+    <div class="role-switch">
+      <div class="role-option active" data-role="admin" onclick="switchRole(this)">
+        Administrator
+      </div>
+      <div class="role-option" data-role="student" onclick="switchRole(this)">
+        Student
+      </div>
+    </div>
+
+    <!-- Django messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="{% if message.tags == 'success' %}msg-success{% else %}msg-error{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Form -->
+    <form method="post" action="{% url 'login' %}" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="role" id="role-field" value="admin">
+
+      <div class="form-group">
+        <label class="form-label">Username / Roll No.</label>
+        <input
+          class="form-control"
+          type="text"
+          name="username"
+          id="username-input"
+          placeholder="e.g. admin"
+          value="{{ request.POST.username|default:'' }}"
+          autocomplete="username"
+          autofocus
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input
+          class="form-control"
+          type="password"
+          name="password"
+          placeholder="••••••••••"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button type="submit" class="login-btn" style="margin-top:4px">
+        Sign in →
+      </button>
+    </form>
+
+    <p class="login-footer">
+      Student accounts are created by your administrator.<br>
+      Contact admin if you cannot log in.
+    </p>
+  </div>
+
+</div>
+
+<script src="{% static 'results/js/acadivo.js' %}"></script>
+<script>
+function switchRole(el) {
+  el.closest('.role-switch').querySelectorAll('.role-option')
+    .forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('role-field').value = el.dataset.role;
+  const uInput = document.getElementById('username-input');
+  uInput.placeholder = el.dataset.role === 'student' ? 'e.g. 2026001' : 'e.g. admin';
+}
+</script>
+</body>
+</html>

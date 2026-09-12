@@ -1,0 +1,189 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}Elective Selection{% endblock %}
+{% block topbar_title %}Elective Selection{% endblock %}
+{% block topbar_sub %}Choose one elective subject per group for each batch{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'subject_list' %}">← Subjects</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info reveal" style="margin-bottom:20px">
+  <strong>How this works:</strong> For each elective group below, pick ONE subject.
+  That subject applies to <strong>all students</strong> of the chosen batch for that semester.
+  You can update the selection anytime before results are published.
+</div>
+
+{% if not elective_slots %}
+<div class="card reveal" style="text-align:center;padding:40px;color:var(--muted)">
+  No elective subjects found.
+  <code class="font-mono" style="color:var(--accent2)">
+    python manage.py loaddata results/fixtures/subjects.json
+  </code>
+</div>
+
+{% else %}
+
+{% for slot_key, slot_subjects in elective_slots.items %}
+<div class="card reveal tilt-card" style="margin-bottom:16px;padding:0;overflow:hidden">
+
+  <!-- Slot header -->
+  <div style="display:flex;align-items:center;gap:12px;
+              padding:12px 20px;border-bottom:1px solid var(--border);
+              background:rgba(13,11,23,0.55)">
+    <div style="width:28px;height:28px;border-radius:7px;flex-shrink:0;
+                background:linear-gradient(135deg,var(--accent),var(--accent2));
+                display:flex;align-items:center;justify-content:center;
+                font-size:12px;font-weight:800;color:#fff;
+                box-shadow:0 0 10px rgba(157,111,255,.4)">
+      {{ slot_key.0 }}
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--text)">
+        Semester {{ slot_key.0 }}
+        <span style="color:var(--muted);font-weight:400;margin:0 6px">·</span>
+        <span class="font-mono" style="color:var(--accent2);font-size:12px">
+          {{ slot_key.1 }}
+        </span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">
+        {{ slot_subjects|length }} option{{ slot_subjects|length|pluralize }}
+        — select one per batch
+      </div>
+    </div>
+  </div>
+
+  <!-- One row per batch -->
+  <div style="padding:16px 20px">
+    {% for batch in batches %}
+    {% elective_selected current batch.pk slot_key.0 slot_key.1 as sel %}
+
+    <div style="{% if not forloop.last %}
+                  border-bottom:1px solid var(--border);
+                  padding-bottom:16px;margin-bottom:16px;
+                {% endif %}">
+
+      <!-- Batch label + status -->
+      <div style="font-size:10px;font-weight:600;color:var(--muted);
+                  text-transform:uppercase;letter-spacing:.08em;
+                  margin-bottom:10px;display:flex;align-items:center;gap:8px">
+        {{ batch.get_name_display }}
+        {% if sel %}
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--green);
+                       box-shadow:0 0 6px var(--green);display:inline-block"></span>
+          <span style="color:var(--green);font-weight:500;letter-spacing:0;
+                       text-transform:none;font-size:11px">
+            Set: {{ sel.selected_subject.name }}
+          </span>
+        {% else %}
+          <span style="width:6px;height:6px;border-radius:50%;background:var(--amber);
+                       box-shadow:0 0 6px var(--amber);display:inline-block"></span>
+          <span style="color:var(--amber);font-weight:500;letter-spacing:0;
+                       text-transform:none;font-size:11px">Not set yet</span>
+        {% endif %}
+      </div>
+
+      <!-- Form with subject radio options -->
+      <form method="post" action="{% url 'elective_select' %}"
+            style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        {% csrf_token %}
+        <input type="hidden" name="batch"          value="{{ batch.pk }}">
+        <input type="hidden" name="semester"       value="{{ slot_key.0 }}">
+        <input type="hidden" name="elective_group" value="{{ slot_key.1 }}">
+
+        {% for subj in slot_subjects %}
+        {% if sel %}
+          {% if sel.selected_subject.pk == subj.pk %}
+            {% with is_selected=True %}
+            <label style="display:flex;align-items:center;gap:9px;
+                          padding:9px 16px;border-radius:8px;cursor:pointer;
+                          flex:1;min-width:200px;
+                          border:1px solid rgba(157,111,255,0.45);
+                          background:rgba(157,111,255,0.12);
+                          transition:border-color .15s,background .15s">
+              <input type="radio" name="subject" value="{{ subj.pk }}" checked
+                     style="accent-color:var(--accent);flex-shrink:0">
+              <div>
+                <div style="font-size:12.5px;font-weight:500;color:var(--text)">{{ subj.name }}</div>
+                <div style="margin-top:3px;display:flex;align-items:center;gap:6px">
+                  {% if subj.subject_type == 'TH' %}
+                    <span class="type-theory">Theory</span>
+                  {% else %}
+                    <span class="type-practical">Practical</span>
+                  {% endif %}
+                  <span class="font-mono" style="font-size:10px;color:var(--muted)">
+                    {{ subj.credits }} cr
+                  </span>
+                </div>
+              </div>
+            </label>
+            {% endwith %}
+          {% else %}
+            <label style="display:flex;align-items:center;gap:9px;
+                          padding:9px 16px;border-radius:8px;cursor:pointer;
+                          flex:1;min-width:200px;
+                          border:1px solid var(--border);
+                          background:rgba(157,111,255,0.03);
+                          transition:border-color .15s,background .15s">
+              <input type="radio" name="subject" value="{{ subj.pk }}"
+                     style="accent-color:var(--accent);flex-shrink:0">
+              <div>
+                <div style="font-size:12.5px;font-weight:500;color:var(--text)">{{ subj.name }}</div>
+                <div style="margin-top:3px;display:flex;align-items:center;gap:6px">
+                  {% if subj.subject_type == 'TH' %}
+                    <span class="type-theory">Theory</span>
+                  {% else %}
+                    <span class="type-practical">Practical</span>
+                  {% endif %}
+                  <span class="font-mono" style="font-size:10px;color:var(--muted)">
+                    {{ subj.credits }} cr
+                  </span>
+                </div>
+              </div>
+            </label>
+          {% endif %}
+        {% else %}
+          <label style="display:flex;align-items:center;gap:9px;
+                        padding:9px 16px;border-radius:8px;cursor:pointer;
+                        flex:1;min-width:200px;
+                        border:1px solid var(--border);
+                        background:rgba(157,111,255,0.03);
+                        transition:border-color .15s,background .15s">
+            <input type="radio" name="subject" value="{{ subj.pk }}"
+                   style="accent-color:var(--accent);flex-shrink:0">
+            <div>
+              <div style="font-size:12.5px;font-weight:500;color:var(--text)">{{ subj.name }}</div>
+              <div style="margin-top:3px;display:flex;align-items:center;gap:6px">
+                {% if subj.subject_type == 'TH' %}
+                  <span class="type-theory">Theory</span>
+                {% else %}
+                  <span class="type-practical">Practical</span>
+                {% endif %}
+                <span class="font-mono" style="font-size:10px;color:var(--muted)">
+                  {{ subj.credits }} cr
+                </span>
+              </div>
+            </div>
+          </label>
+        {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary"
+                style="white-space:nowrap;align-self:center">
+          {% if sel %}Update{% else %}Set{% endif %} for {{ batch.name }}
+        </button>
+
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

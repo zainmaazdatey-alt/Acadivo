@@ -1,0 +1,207 @@
+{% extends 'results/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+{% block topbar_sub %}Academic Year 2025–26{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'student_add' %}">+ Add Student</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── STAT CARDS ── -->
+<div class="stat-grid reveal">
+
+  <div class="stat-card card-glow-top violet tilt-card">
+    <div class="orb" style="background:var(--accent)"></div>
+    <div class="stat-label">Total Students</div>
+    <div class="stat-value text-accent2"
+         data-count="{{ total_students }}" data-dec="0" data-ms="900">
+      {{ total_students }}
+    </div>
+    <div class="stat-meta">
+      <span class="stat-dot" style="background:var(--accent);box-shadow:0 0 6px var(--accent)"></span>
+      All active batches
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top green tilt-card">
+    <div class="orb" style="background:var(--green)"></div>
+    <div class="stat-label">Results Published</div>
+    <div class="stat-value text-green"
+         data-count="{{ results_published }}" data-dec="0" data-ms="700">
+      {{ results_published }}
+    </div>
+    <div class="stat-meta">
+      <span class="stat-dot" style="background:var(--green);box-shadow:0 0 6px var(--green)"></span>
+      Across all semesters
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top violet tilt-card">
+    <div class="orb" style="background:#A78BFF"></div>
+    <div class="stat-label">Avg CGPA — TY</div>
+    <div class="stat-value" style="color:#C4B5FD"
+         data-count="{{ avg_cgpa }}" data-dec="1" data-ms="900">
+      {% if avg_cgpa %}{{ avg_cgpa }}{% else %}—{% endif %}
+    </div>
+    <div class="stat-meta">
+      <span class="stat-dot" style="background:#A78BFF;box-shadow:0 0 6px #A78BFF"></span>
+      Third year batch
+    </div>
+  </div>
+
+  <div class="stat-card card-glow-top amber tilt-card">
+    <div class="orb" style="background:var(--amber)"></div>
+    <div class="stat-label">Pending Publish</div>
+    <div class="stat-value text-amber"
+         data-count="{{ pending_publish }}" data-dec="0" data-ms="600">
+      {{ pending_publish }}
+    </div>
+    <div class="stat-meta">
+      <span class="stat-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
+      Awaiting publication
+    </div>
+  </div>
+
+</div>
+
+<!-- ── MAIN GRID ── -->
+<div class="grid-2">
+
+  <!-- Top performers table -->
+  <div class="reveal">
+    <div class="d-flex align-center justify-between mb-12">
+      <div style="font-size:13px;font-weight:600;color:var(--text)">Top Performers — TY</div>
+      <a class="btn btn-secondary btn-sm" href="{% url 'student_list' %}?batch=TY">View all →</a>
+    </div>
+    <div class="table-wrap">
+      <table class="acadivo-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Roll No.</th>
+            <th>Batch</th>
+            <th>CGPA</th>
+            <th>Standing</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in top_performers %}
+          <tr {% if forloop.first %}class="highlight"{% endif %}>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="
+                  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+                  background:linear-gradient(135deg,var(--accent),var(--accent2));
+                  display:flex;align-items:center;justify-content:center;
+                  font-size:10px;font-weight:700;color:#fff;
+                  {% if forloop.first %}box-shadow:0 0 12px rgba(157,111,255,0.5);{% endif %}
+                ">{{ result.student.initials }}</div>
+                <div>
+                  <div style="font-weight:600;color:var(--text);font-size:12.5px">
+                    {% if forloop.first %}🏆 {% endif %}{{ result.student.full_name }}
+                  </div>
+                  <div class="font-mono" style="font-size:10px;color:var(--muted)">
+                    {{ result.student.batch.name }} · Sem {{ result.student.batch.semesters.1 }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="font-mono" style="font-size:11px;color:var(--muted)">
+              {{ result.student.roll_number }}
+            </td>
+            <td>
+              <span class="badge badge-progress">{{ result.student.batch.name }}</span>
+            </td>
+            <td>
+              <span style="
+                font-weight:800;font-size:16px;
+                {% if result.cgpa >= 9 %}color:var(--green);text-shadow:0 0 12px rgba(52,211,153,0.4);
+                {% elif result.cgpa >= 7 %}color:var(--accent2);
+                {% else %}color:var(--text);{% endif %}
+              ">{{ result.cgpa }}</span>
+            </td>
+            <td>
+              {% if result.cgpa >= 9 %}<span class="badge badge-O">Outstanding</span>
+              {% elif result.cgpa >= 8 %}<span class="badge badge-Ap">Excellent</span>
+              {% elif result.cgpa >= 7 %}<span class="badge badge-A">Very Good</span>
+              {% elif result.cgpa >= 6 %}<span class="badge badge-B">Good</span>
+              {% else %}<span class="badge badge-C">Average</span>{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" style="text-align:center;color:var(--muted);padding:28px">
+              No results published yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Batch result status -->
+  <div class="reveal">
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">
+      Batch Result Status
+    </div>
+    <div class="card" style="padding:18px 20px">
+      {% for bs in batch_status %}
+      <div style="{% if not forloop.last %}margin-bottom:20px{% endif %}">
+        <div class="d-flex align-center justify-between" style="margin-bottom:6px">
+          <span style="font-size:12.5px;font-weight:500;color:var(--text)">
+            {{ bs.batch.get_name_display }}
+          </span>
+          {% if bs.pct == 100 %}
+            <span class="badge badge-done">Complete</span>
+          {% elif bs.pct > 0 %}
+            <span class="badge badge-pending">In Progress</span>
+          {% else %}
+            <span class="badge" style="background:rgba(157,111,255,0.08);color:var(--muted);border:1px solid var(--border)">Not Started</span>
+          {% endif %}
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill {% if bs.pct == 100 %}progress-green{% else %}progress-violet{% endif %}"
+               style="width:{{ bs.pct }}%"></div>
+        </div>
+        <div class="d-flex justify-between" style="margin-top:4px">
+          <span class="font-mono" style="font-size:10.5px;color:var(--muted)">
+            Sem {{ bs.sems.0 }} &amp; Sem {{ bs.sems.1 }}
+            · {{ bs.published }} published
+          </span>
+          <span class="font-mono" style="font-size:10.5px;color:var(--muted)">
+            {{ bs.total }} students
+          </span>
+        </div>
+      </div>
+      {% empty %}
+      <div style="color:var(--muted);font-size:13px;text-align:center;padding:16px 0">
+        No batches found.
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Quick actions -->
+    <div style="margin-top:14px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">
+      Quick Actions
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <a href="{% url 'student_add' %}" class="btn btn-secondary" style="justify-content:center">
+        + Add New Student
+      </a>
+      <a href="{% url 'marks_entry' %}" class="btn btn-secondary" style="justify-content:center">
+        ✏️  Enter Marks
+      </a>
+      <a href="{% url 'result_publish' %}" class="btn btn-secondary" style="justify-content:center">
+        📢  Publish Results
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

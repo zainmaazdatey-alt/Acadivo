@@ -1,0 +1,188 @@
+{% extends 'results/base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} Student{% endblock %}
+{% block topbar_title %}{{ topbar_title }}{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'student_list' %}">← Back to Students</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:640px">
+
+  <!-- Non-field errors -->
+  {% if form.non_field_errors %}
+  <div class="alert alert-error reveal" style="margin-bottom:18px">
+    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" action="" novalidate>
+    {% csrf_token %}
+
+    <!-- ── ACCOUNT DETAILS ── -->
+    <div class="card reveal" style="margin-bottom:14px">
+      <div style="
+        font-size:10px;font-weight:600;color:var(--muted);
+        letter-spacing:.08em;text-transform:uppercase;
+        padding:10px 18px;border-bottom:1px solid var(--border);
+        margin:-16px -18px 16px;background:rgba(13,11,23,0.5);
+      ">Account Details</div>
+
+      <!-- Roll Number -->
+      <div class="form-group">
+        <label class="form-label">
+          Roll Number
+          <span style="color:var(--red)">*</span>
+        </label>
+        {{ form.roll_number }}
+        {% if form.roll_number.errors %}
+        <div class="invalid-feedback" style="display:block">
+          {{ form.roll_number.errors.0 }}
+        </div>
+        {% endif %}
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">
+          {{ form.roll_number.help_text }}
+        </div>
+      </div>
+
+      <!-- Batch -->
+      <div class="form-group">
+        <label class="form-label">
+          Batch (Year)
+          <span style="color:var(--red)">*</span>
+        </label>
+        {{ form.batch }}
+        {% if form.batch.errors %}
+        <div class="invalid-feedback" style="display:block">
+          {{ form.batch.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- ── PERSONAL INFORMATION ── -->
+    <div class="card reveal" style="margin-bottom:14px">
+      <div style="
+        font-size:10px;font-weight:600;color:var(--muted);
+        letter-spacing:.08em;text-transform:uppercase;
+        padding:10px 18px;border-bottom:1px solid var(--border);
+        margin:-16px -18px 16px;background:rgba(13,11,23,0.5);
+      ">Personal Information</div>
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label class="form-label">
+          Full Name
+          <span style="color:var(--red)">*</span>
+        </label>
+        {{ form.full_name }}
+        {% if form.full_name.errors %}
+        <div class="invalid-feedback" style="display:block">
+          {{ form.full_name.errors.0 }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Email + Phone side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+          <div class="invalid-feedback" style="display:block">
+            {{ form.email.errors.0 }}
+          </div>
+          {% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          {{ form.phone }}
+          {% if form.phone.errors %}
+          <div class="invalid-feedback" style="display:block">
+            {{ form.phone.errors.0 }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── PASSWORD ── -->
+    <div class="card reveal" style="margin-bottom:20px">
+      <div style="
+        font-size:10px;font-weight:600;color:var(--muted);
+        letter-spacing:.08em;text-transform:uppercase;
+        padding:10px 18px;border-bottom:1px solid var(--border);
+        margin:-16px -18px 16px;background:rgba(13,11,23,0.5);
+      ">
+        Password
+        {% if student %}
+        <span style="font-size:10px;font-weight:400;color:var(--muted);
+                     text-transform:none;letter-spacing:0;margin-left:8px">
+          — leave blank to keep current
+        </span>
+        {% endif %}
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label class="form-label">
+            Password
+            {% if not student %}<span style="color:var(--red)">*</span>{% endif %}
+          </label>
+          {{ form.password }}
+          {% if form.password.errors %}
+          <div class="invalid-feedback" style="display:block">
+            {{ form.password.errors.0 }}
+          </div>
+          {% endif %}
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">
+            {{ form.password.help_text }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            Confirm Password
+            {% if not student %}<span style="color:var(--red)">*</span>{% endif %}
+          </label>
+          {{ form.confirm_password }}
+          {% if form.confirm_password.errors %}
+          <div class="invalid-feedback" style="display:block">
+            {{ form.confirm_password.errors.0 }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── FORM ACTIONS ── -->
+    <div class="reveal" style="display:flex;gap:10px;align-items:center">
+      <button type="submit" class="btn btn-primary btn-lg">
+        {{ action }}
+      </button>
+      <a href="{% url 'student_list' %}" class="btn btn-secondary btn-lg">
+        Cancel
+      </a>
+      {% if student %}
+      <div style="margin-left:auto">
+        <form method="post" action="{% url 'student_delete' student.pk %}"
+              style="display:inline"
+              onsubmit="return confirm('Deactivate {{ student.full_name }}?')">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            Deactivate Student
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+  </form>
+</div>
+{% endblock %}

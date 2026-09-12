@@ -1,0 +1,178 @@
+{% extends 'results/base.html' %}
+{% load static acadivo_tags %}
+
+{% block title %}Subjects{% endblock %}
+{% block topbar_title %}Subjects{% endblock %}
+{% block topbar_sub %}{{ topbar_sub }}{% endblock %}
+
+{% block topbar_actions %}
+<a class="btn btn-secondary btn-sm" href="{% url 'elective_select' %}">⚡ Set Electives</a>
+<a class="btn btn-primary btn-sm" href="{% url 'subject_add' %}">+ Add Subject</a>
+<a class="btn btn-secondary btn-sm" href="{% url 'logout' %}">Sign Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── FILTERS ── -->
+<form method="get" class="reveal"
+      style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:flex-end">
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.07em;
+                text-transform:uppercase;margin-bottom:4px">Semester</div>
+    <select name="sem" class="form-select" style="width:160px" onchange="this.form.submit()">
+      <option value="">All Semesters</option>
+      {% for val, label in sem_choices %}
+        <option value="{{ val }}" {% if sem_filter == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div>
+    <div style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.07em;
+                text-transform:uppercase;margin-bottom:4px">Type</div>
+    <select name="type" class="form-select" style="width:140px" onchange="this.form.submit()">
+      <option value="">All Types</option>
+      <option value="TH" {% if type_filter == 'TH' %}selected{% endif %}>Theory</option>
+      <option value="PR" {% if type_filter == 'PR' %}selected{% endif %}>Practical</option>
+    </select>
+  </div>
+  {% if sem_filter or type_filter %}
+  <div style="align-self:flex-end">
+    <a href="{% url 'subject_list' %}" class="btn btn-secondary">Clear</a>
+  </div>
+  {% endif %}
+</form>
+
+<!-- ── SEMESTER GROUPS ── -->
+{% for sem_num, sem_data in grouped.items %}
+<div class="reveal" style="margin-bottom:18px">
+
+  <!-- Sem header -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+    <div style="
+      width:28px;height:28px;border-radius:7px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:800;color:#fff;
+      box-shadow:0 0 10px rgba(157,111,255,.4);flex-shrink:0;
+    ">{{ sem_num }}</div>
+    <div style="font-size:14px;font-weight:700;color:var(--text)">
+      {{ sem_data.label }}
+    </div>
+    <div style="display:flex;gap:6px">
+      <span class="badge badge-A" style="font-size:10px">
+        {{ sem_data.theory }} Theory
+      </span>
+      <span class="badge badge-done" style="font-size:10px">
+        {{ sem_data.practical }} Practical
+      </span>
+    </div>
+    <div style="margin-left:auto">
+      <span class="font-mono" style="font-size:11px;color:var(--muted)">
+        {{ sem_data.total }} subjects
+      </span>
+    </div>
+  </div>
+
+  <!-- Subjects table -->
+  <div class="table-wrap">
+    <table class="acadivo-table">
+      <thead>
+        <tr>
+          <th style="width:36%">Subject Name</th>
+          <th>Code</th>
+          <th>Type</th>
+          <th>Group</th>
+          <th>Credits</th>
+          <th>CE / ESE</th>
+          <th>Elective</th>
+          <th>Status</th>
+          <th style="text-align:right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subject in sem_data.subjects %}
+        <tr>
+          <!-- Name -->
+          <td>
+            <div style="font-weight:500;color:var(--text);font-size:12.5px">
+              {{ subject.name }}
+            </div>
+            {% if subject.is_elective %}
+            <div class="font-mono" style="font-size:10px;color:var(--muted);margin-top:2px">
+              Group: {{ subject.elective_group }}
+            </div>
+            {% endif %}
+          </td>
+
+          <!-- Code -->
+          <td class="font-mono" style="font-size:11px;color:var(--muted)">
+            {{ subject.code|default:"—" }}
+          </td>
+
+          <!-- Type -->
+          <td>
+            {% if subject.subject_type == 'TH' %}
+              <span class="type-theory">Theory</span>
+            {% else %}
+              <span class="type-practical">Practical</span>
+            {% endif %}
+          </td>
+
+          <!-- Group -->
+          <td style="font-size:12px;color:var(--muted2)">{{ subject.group }}</td>
+
+          <!-- Credits -->
+          <td class="font-mono" style="font-size:12px;color:var(--accent2);text-align:center">
+            {{ subject.credits }}
+          </td>
+
+          <!-- CE / ESE -->
+          <td class="font-mono" style="font-size:12px;color:var(--muted2)">
+            {{ subject.ce_max }} / {{ subject.ese_max }}
+          </td>
+
+          <!-- Elective -->
+          <td>
+            {% if subject.is_elective %}
+              <span class="badge badge-pending">Elective</span>
+            {% else %}
+              <span style="color:var(--muted);font-size:11px">—</span>
+            {% endif %}
+          </td>
+
+          <!-- Status -->
+          <td>
+            {% if subject.is_active %}
+              <span class="badge badge-done">Active</span>
+            {% else %}
+              <span class="badge badge-fail">Inactive</span>
+            {% endif %}
+          </td>
+
+          <!-- Actions -->
+          <td style="text-align:right">
+            <a href="{% url 'subject_edit' subject.pk %}"
+               class="btn btn-secondary btn-sm">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" style="text-align:center;padding:24px;color:var(--muted)">
+            No subjects found for this filter.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% empty %}
+<div class="card reveal" style="text-align:center;padding:40px;color:var(--muted)">
+  No subjects loaded yet.
+  Run: <code class="font-mono" style="color:var(--accent2)">
+    python manage.py loaddata results/fixtures/subjects.json
+  </code>
+</div>
+{% endfor %}
+
+{% endblock %}

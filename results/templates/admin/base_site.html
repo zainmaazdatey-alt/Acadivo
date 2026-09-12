@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Acadivo Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    <span style="
+      display:inline-flex;align-items:center;gap:10px;
+      font-family:'Inter',sans-serif;font-weight:700;
+      font-size:17px;color:#EDE9FF;letter-spacing:-0.2px;
+    ">
+      <span style="
+        width:26px;height:26px;background:#9D6FFF;border-radius:7px;
+        display:inline-flex;align-items:center;justify-content:center;
+        font-size:11px;font-weight:800;color:#fff;
+        box-shadow:0 0 12px rgba(157,111,255,0.55);
+      ">A</span>
+      Acadivo
+    </span>
+  </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet"
+        href="{% static 'results/css/admin_theme.css' %}">
+{% endblock %}
+
+{% block footer %}
+<div id="footer" style="
+  background:#0D0B17;border-top:1px solid rgba(157,111,255,0.12);
+  color:#5A5080;font-size:11px;font-family:'IBM Plex Mono',monospace;
+  padding:10px 24px;text-align:center;
+">
+  Acadivo Admin · Anjuman Islam Janjira Degree College of Science ·
+  BSc CS (NEP) · Mumbai University
+</div>
+{% endblock %}
