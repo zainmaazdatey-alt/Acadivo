@@ -14,7 +14,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # All Acadivo routes — handled by results app
-    path('', include('results.urls')),
+    # TODO: 'results' app is not yet present in the repo — temporarily disabled to unblock startup.
+    # path('', include('results.urls')),
 ]
 
 # Serve media files in development (college logo, etc.)
