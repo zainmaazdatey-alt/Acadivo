@@ -1,0 +1,5 @@
+Django==4.2.11
+Pillow==10.3.0
+reportlab==4.2.0
+WeasyPrint==62.3
+python-decouple==3.8
