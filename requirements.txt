@@ -7,7 +7,7 @@ Django==4.2.11
 fonttools==4.63.0
 gunicorn==26.2.0
 html5lib==1.1
-pillow==10.3.0
+Pillow==10.4.0
 pycparser==3.0
 pydyf==0.12.1
 pyphen==0.18.1
