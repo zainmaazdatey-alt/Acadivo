@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 # ─── MIDDLEWARE ────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # ← add this line
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,3 +153,4 @@ SUBJECT_TOTAL     = 50
 PASS_PERCENTAGE   = 40
 
 ROLL_NUMBER_PATTERN = r'^\d{4}\d{3}$'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
