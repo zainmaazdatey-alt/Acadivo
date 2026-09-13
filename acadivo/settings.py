@@ -154,3 +154,9 @@ PASS_PERCENTAGE   = 40
 
 ROLL_NUMBER_PATTERN = r'^\d{4}\d{3}$'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+CSRF_TRUSTED_ORIGINS = ['https://acadivo-production.up.railway.app']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://acadivo-production.up.railway.app',
+    'https://acadivo.onrender.com',
+]
